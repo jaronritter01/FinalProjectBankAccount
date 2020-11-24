@@ -10,11 +10,11 @@ class Account
 {
     private:
         string holderFirstName, holderLastName, phoneNumber, address;
-        double interestRate, termLength, balance;
+        double interestRate, termLength, balance = 0.0;
         int accountNumber;
 
     public:
-        Account(string, string, string, string);
+        Account(int);
         string getFirstName() const;
         string getLastName() const;
         string getPhoneNumber() const;
@@ -34,11 +34,8 @@ class Account
 
 };
 
-Account::Account(string FirstName, string LastName, string PhoneNumber, string Address){
-    holderFirstName = FirstName;
-    holderLastName = LastName;
-    phoneNumber = PhoneNumber;
-    address = Address;
+Account::Account(int AccountNumber){
+    accountNumber = AccountNumber;
 }
 
 string Account::getFirstName() const
@@ -115,7 +112,7 @@ void Account::withdraw(double amount)
 {
     if(amount > 0)
     {
-        balance += amount;
+        balance -= amount;
     }
     else
     {
@@ -127,7 +124,7 @@ void Account::deposit(double amount)
 {
     if(amount > 0)
     {
-        balance -= amount;
+        balance += amount;
     }
     else
     {
