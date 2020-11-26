@@ -1,134 +1,357 @@
-#ifndef ACCOUNT_H
-#define ACCOUNT_H
+##ifndef ACCOUNTP_H
+#define ACCOUNTP_H
 
 #include <string>
 #include <iostream>
+#include <time.h>
+#include <vector>
 
 using namespace std;
 
-class Account
+class AccountP
 {
     private:
-        string holderFirstName, holderLastName, phoneNumber, address;
-        double interestRate, termLength, balance = 0.0;
-        int accountNumber;
+        bool status;
+        double interestRate =0.0, termLength, balance =0.0,monthlyServiceFee;
+        int accountNumber,term =0;
+        string type;
+        tm* timeCreated;
+        tm* timeNow;
+        tm* lastOpen;
+        tm* timeClosed;
+        tm* maturity;
+        vector<string> transactions;
+        
 
     public:
-        Account(int);
-        string getFirstName() const;
-        string getLastName() const;
-        string getPhoneNumber() const;
-        string getAddress() const;
-        double getInterestRate() const;
-        double getTermLength() const;
-        double getBalance() const;
-        int getAccountNumber() const;
-        void setFirstName(string);
-        void setLastName(string);
-        void setPhoneNumber(string);
-        void setAddress(string);
-        void setInterestRate(double);
-        void setTermLength(double);
+        AccountP(int, double);
+        int getAccountNumber();
+        double getBalance();
+        void setInterest(double);
+        double getInterest();
+        string getType();
+        void setType(string);
+        bool getStatus();
+        void setStatus(bool);
+        string getDateCreated() const;
+        string getDateClosed() const;
         void withdraw(double);
         void deposit(double);
+        void setCreationTime();
+        void setCreationTimeFile(string);
+        void setTimeNow();
+        void setLastOpen(string);
+        void closeAccount();
+        void setCloseAccountFile(string);
+        void setTerm(int);
+        void setMonTerm(double);
+        double getMonTerm();
+        void calculateInt();
+        void calculateMonTerm();
+        void setMaturity();
+        bool checkMaturity();
+        void printTransactions();
+        
 
 };
 
-Account::Account(int AccountNumber){
-    accountNumber = AccountNumber;
+AccountP::AccountP(int newAccountNumber, double newBalance)
+{
+    accountNumber = newAccountNumber;
+    balance = newBalance;  
+    status = true;
 }
 
-string Account::getFirstName() const
-{
-    return holderFirstName;
+int AccountP:: getAccountNumber()
+{ 
+   return accountNumber;
 }
 
-string Account::getLastName() const
+void AccountP:: setCreationTime()
 {
-    return holderLastName;
+    time_t currentTime;
+    time(&currentTime);
+    timeCreated = localtime(&currentTime);
 }
 
-string Account::getPhoneNumber() const
+void AccountP:: setCreationTimeFile(string date)
 {
-    return phoneNumber;
+   
+   int mon = stoi(date.substr(0, date.find("/")));
+   date = date.substr(date.find("/") +1 , date.length());
+   int day = stoi(date.substr(0, date.find("/")));
+   date = date.substr(date.find("/") +1 , date.length());
+   int year = stoi(date.substr(0, date.length()));
+   
+   timeCreated->tm_mday = day;
+   timeCreated->tm_mon = mon - 1;
+   timeCreated->tm_year = year - 1900;
+   
 }
 
-string Account::getAddress() const
+void AccountP:: setTimeNow()
 {
-    return address;
+    time_t currentTime;
+    time(&currentTime);
+    timeNow = localtime(&currentTime);
 }
 
-double Account::getInterestRate() const
+void AccountP:: setLastOpen(string date)
 {
-    return interestRate;
+   
+   int mon = stoi(date.substr(0, date.find("/")));
+   date = date.substr(date.find("/") +1 , date.length());
+   int day = stoi(date.substr(0, date.find("/")));
+   date = date.substr(date.find("/") +1 , date.length());
+   int year = stoi(date.substr(0, date.length()));
+   
+   lastOpen->tm_mday = day;
+   lastOpen->tm_mon = mon - 1;
+   lastOpen->tm_year = year - 1900;
 }
 
-double Account::getTermLength() const
+void AccountP:: setInterest(double Interest)
 {
-    return termLength;
+   interestRate = Interest;
 }
 
-double Account::getBalance() const
+double AccountP:: getInterest()
 {
-    return balance;
+   return interestRate;
 }
 
-int Account::getAccountNumber() const
+double AccountP:: getBalance()
 {
-    return accountNumber;
+   return balance;
 }
 
-void Account::setFirstName(string newFirstName)
+void AccountP:: setType(string newType)
 {
-    holderFirstName = newFirstName;
+   type = newType;
 }
 
-void Account::setLastName(string newLastName)
+string AccountP:: getType()
 {
-    holderLastName = newLastName;
+   return type;
 }
 
-void Account::setAddress(string newAddress)
+void AccountP:: setStatus(bool value)
 {
-    address = newAddress;
+   status = value;
 }
 
-void Account::setPhoneNumber(string newPhoneNumber)
+bool AccountP:: getStatus()
 {
-    phoneNumber = newPhoneNumber;
+   return status;
 }
 
-void Account::setInterestRate(double intRate)
-{
-    interestRate = intRate;
+string AccountP::getDateCreated() const{
+    //Getter for the creation date of the account
+    string dateLine, day, month, year;
+    day = to_string(timeCreated->tm_mday);
+    month = to_string(timeCreated->tm_mon + 1);
+    year = to_string(timeCreated->tm_year + 1900);
+    dateLine = month + "/" + day + "/" + year;
+    
+    return dateLine;
 }
 
-void Account::setTermLength(double termLen)
+string AccountP::getDateClosed() const
 {
-    termLength = termLen;
+    string dateLine, day, month, year;
+    day = to_string(timeClosed->tm_mday);
+    month = to_string(timeClosed->tm_mon + 1);
+    year = to_string(timeClosed->tm_year + 1900);
+    dateLine = month + "/" + day + "/" + year;
+    
+    return dateLine;
+
 }
 
-void Account::withdraw(double amount)
+void AccountP::withdraw(double amount)
 {
-    if(amount > 0)
+    tm* wTime;
+    if(status == true)
     {
-        balance -= amount;
+       if(amount > 0)
+       {
+           if(amount < balance)
+           {
+               balance -= amount;
+               
+               time_t withdrawTime;
+               time(&withdrawTime);
+               wTime = localtime(&withdrawTime);
+               
+               string dateLine, day, month, year;
+               day = to_string(wTime->tm_mday);
+               month = to_string(wTime->tm_mon + 1);
+               year = to_string(wTime->tm_year + 1900);
+               dateLine = month + "/" + day + "/" + year;
+               
+               transactions.push_back(dateLine + " withdrew $" + to_string(amount)); 
+                           
+           }
+           else
+           {
+               cout<< "Not enough in Account" <<endl;
+           }
+       }
+       else
+       {
+           cout << "Invalid amount entered\n";
+       }
     }
     else
     {
-        cout << "Invalid amount entered\n";
+      cout << " Account is closed" <<endl;
     }
 }
 
-void Account::deposit(double amount)
+void AccountP::deposit(double amount)
 {
-    if(amount > 0)
+    tm* dTime;
+    if(status == true)
     {
-        balance += amount;
+       if(amount > 0)
+       {
+            balance += amount;
+               
+            time_t depositTime;
+            time(&depositTime);
+            dTime = localtime(&depositTime);
+               
+            string dateLine, day, month, year;
+            day = to_string(dTime->tm_mday);
+            month = to_string(dTime->tm_mon + 1);
+            year = to_string(dTime->tm_year + 1900);
+            dateLine = month + "/" + day + "/" + year;
+            
+            if(term != 0 && checkMaturity() == false)
+            {
+               interestRate = 0;
+            }
+               
+            transactions.push_back(dateLine + " deposited $" + to_string(amount));             
+       }
+       else
+       {
+           cout << "Invalid amount entered\n";
+       }
     }
     else
     {
-        cout << "Invalid amount entered\n";
+      cout << " Account is closed" <<endl;
     }
+}
+
+void AccountP :: closeAccount()
+{
+   status = false;
+   balance = 0; 
+   
+   time_t currentTime;
+   time(&currentTime);
+   timeClosed = localtime(&currentTime);  
+}
+
+void AccountP:: setCloseAccountFile(string date)
+{
+   int mon = stoi(date.substr(0, date.find("/")));
+   date = date.substr(date.find("/") +1 , date.length());
+   int day = stoi(date.substr(0, date.find("/")));
+   date = date.substr(date.find("/") +1 , date.length());
+   int year = stoi(date.substr(0, date.length()));
+   
+   timeClosed->tm_mday = day;
+   timeClosed->tm_mon = mon - 1;
+   timeClosed->tm_year = year - 1900;
+}
+
+void AccountP:: setTerm(int years)
+{
+   term = years; 
+}
+
+void AccountP:: setMonTerm(double amount)
+{
+   monthlyServiceFee = amount;
+}
+
+double AccountP:: getMonTerm()
+{
+   return monthlyServiceFee;
+}
+
+void AccountP:: calculateInt()
+{
+   if(term ==0 || checkMaturity() == true)
+   {
+      time_t oldDate = mktime(lastOpen);
+      time_t newDate = mktime(timeNow);
+      
+      double days = difftime(newDate, oldDate)/(60*60*24);
+      
+      if(interestRate != 0)
+      {
+         for(int i= 0; i < days; i++)
+         {
+            double dailyInterestRate = interestRate / 365.25;
+            double dailyInterest = balance * dailyInterestRate;
+            balance += dailyInterest;
+         }
+      }
+   }
+}
+
+void AccountP:: calculateMonTerm()
+{
+   time_t oldDate = mktime(lastOpen);
+   time_t newDate = mktime(timeNow);
+   
+   double days = difftime(newDate, oldDate)/(60*60*24);
+   double months = days/12; 
+   
+   for(int i= 0; i < months; i++)
+   {
+      balance -= monthlyServiceFee;
+   }
+}
+
+void AccountP:: setMaturity()
+{
+   int day,month,year;
+   
+    day = timeCreated->tm_mday;
+    month = timeCreated->tm_mon;
+    year = timeCreated->tm_year;
+    
+    maturity->tm_mday = day;
+    maturity->tm_mon = month;
+    maturity->tm_year = year + term;
+    
+}
+
+bool AccountP:: checkMaturity()
+{
+   time_t currentTime = mktime(timeNow);
+   time_t maturityTime = mktime(maturity);
+   
+   double seconds = difftime(currentTime, maturityTime);
+   
+   if(seconds <= 0)
+   {
+      return true;
+   }
+   
+   return false;
+}
+
+void AccountP:: printTransactions()
+{
+   for(int i =0; i < transactions.size();i++)
+   {
+      cout<< transactions[i]<< endl;
+   }
 }
 #endif
