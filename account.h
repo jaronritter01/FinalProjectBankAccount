@@ -1,3 +1,4 @@
+
 #ifndef ACCOUNTP_H
 #define ACCOUNTP_H
 
@@ -62,6 +63,7 @@ AccountP::AccountP(int newAccountNumber, double newBalance)
     status = true;
 }
 
+
 int AccountP:: getAccountNumber() const
 { 
    return accountNumber;
@@ -115,10 +117,12 @@ void AccountP:: setInterest(double Interest)
    interestRate = Interest;
 }
 
+
 double AccountP:: getInterest() const
 {
    return interestRate;
 }
+
 
 double AccountP:: getBalance() const
 {
@@ -130,6 +134,7 @@ void AccountP:: setType(string newType)
    type = newType;
 }
 
+
 string AccountP:: getType() const 
 {
    return type;
@@ -139,6 +144,7 @@ void AccountP:: setStatus(bool value)
 {
    status = value;
 }
+
 
 bool AccountP:: getStatus() const
 {
@@ -167,6 +173,7 @@ string AccountP::getDateClosed() const
     return dateLine;
 
 }
+
 
 void AccountP::withdraw(double amount, string bankOfficialName)
 {
@@ -278,6 +285,7 @@ void AccountP:: setMonTerm(double amount)
    monthlyServiceFee = amount;
 }
 
+
 double AccountP:: getMonTerm() const
 {
    return monthlyServiceFee;
@@ -354,4 +362,6 @@ void AccountP:: printTransactions()
       cout<< transactions[i]<< endl;
    }
 }
+
 #endif
+
