@@ -65,7 +65,7 @@ void Admin::modify(AccountHolder &accHldr, int accountNumber, double intRate)
     {
         if(intRate >= 0.0)
         {
-           accHldr.getAccountAt(location).setInterestRate(intRate);
+           accHldr.getAccountAt(location).setInterest(intRate);
         }
         else
         {
@@ -97,8 +97,8 @@ void Admin::modify(AccountHolder &accHldr, int accountNumber, double intRate, do
     {
         if(intRate >= 0.0 && term >= 0.0)
         {
-           accHldr.getAccountAt(location).setInterestRate(intRate);
-           accHldr.getAccountAt(location).setTermLength(term);
+           accHldr.getAccountAt(location).setInterest(intRate);
+           accHldr.getAccountAt(location).setTerm(term);
         }
         else
         {

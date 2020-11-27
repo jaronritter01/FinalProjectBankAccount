@@ -150,7 +150,7 @@ void BankOfficial::closeAccount(AccountHolder &AccHolder, int accountNumber)
 {
     if(status)
     {
-        vector<Account> accounts = AccHolder.getAccounts();
+        vector<AccountP> accounts = AccHolder.getAccounts();
 
         bool found = false;
 
@@ -185,7 +185,7 @@ void BankOfficial::deposit(AccountHolder &accHldr, int accountNumber, double amo
 {
     if(status)
     {
-        accHldr.deposit(accountNumber, amount);
+        accHldr.deposit(accountNumber, amount, firstName + " "  + lastName);
     }
     else
     {
@@ -197,7 +197,7 @@ void BankOfficial::withdraw(AccountHolder &accHldr, int accountNumber, double am
 {
     if(status)
     {
-        accHldr.withdraw(accountNumber, amount);
+        accHldr.withdraw(accountNumber, amount, firstName + " "  + lastName);
     }
     else
     {
@@ -226,7 +226,7 @@ void BankOfficial::search(vector<AccountHolder> accountHolders, int accountNumbe
         if(found)
         {
             AccountHolder accHolderF = accountHolders[accountHolderID];
-            Account accountLocated = accountHolders[accountHolderID].getAccountAt(accountID);
+            AccountP accountLocated = accountHolders[accountHolderID].getAccountAt(accountID);
             cout << "Account Number: " << accountLocated.getAccountNumber() << '\n' << "Account Holder: " << accHolderF.getFirstName() << " " << accHolderF.getLastName() 
             << '\n' << "Account Balance: " << accountLocated.getBalance() <<  '\n' << "Account Type: " << accountLocated.getType() << '\n';
         }
