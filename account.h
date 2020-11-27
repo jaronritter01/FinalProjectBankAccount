@@ -1,4 +1,5 @@
-##ifndef ACCOUNTP_H
+
+#ifndef ACCOUNTP_H
 #define ACCOUNTP_H
 
 #include <string>
@@ -25,18 +26,18 @@ class AccountP
 
     public:
         AccountP(int, double);
-        int getAccountNumber();
-        double getBalance();
+        int getAccountNumber() const;
+        double getBalance() const;
         void setInterest(double);
-        double getInterest();
-        string getType();
+        double getInterest() const;
+        string getType() const;
         void setType(string);
-        bool getStatus();
+        bool getStatus() const;
         void setStatus(bool);
         string getDateCreated() const;
         string getDateClosed() const;
-        void withdraw(double);
-        void deposit(double);
+        void withdraw(double, string);
+        void deposit(double, string);
         void setCreationTime();
         void setCreationTimeFile(string);
         void setTimeNow();
@@ -45,7 +46,7 @@ class AccountP
         void setCloseAccountFile(string);
         void setTerm(int);
         void setMonTerm(double);
-        double getMonTerm();
+        double getMonTerm() const;
         void calculateInt();
         void calculateMonTerm();
         void setMaturity();
@@ -62,7 +63,8 @@ AccountP::AccountP(int newAccountNumber, double newBalance)
     status = true;
 }
 
-int AccountP:: getAccountNumber()
+
+int AccountP:: getAccountNumber() const
 { 
    return accountNumber;
 }
@@ -115,12 +117,14 @@ void AccountP:: setInterest(double Interest)
    interestRate = Interest;
 }
 
-double AccountP:: getInterest()
+
+double AccountP:: getInterest() const
 {
    return interestRate;
 }
 
-double AccountP:: getBalance()
+
+double AccountP:: getBalance() const
 {
    return balance;
 }
@@ -130,7 +134,8 @@ void AccountP:: setType(string newType)
    type = newType;
 }
 
-string AccountP:: getType()
+
+string AccountP:: getType() const 
 {
    return type;
 }
@@ -140,7 +145,8 @@ void AccountP:: setStatus(bool value)
    status = value;
 }
 
-bool AccountP:: getStatus()
+
+bool AccountP:: getStatus() const
 {
    return status;
 }
@@ -168,7 +174,8 @@ string AccountP::getDateClosed() const
 
 }
 
-void AccountP::withdraw(double amount)
+
+void AccountP::withdraw(double amount, string bankOfficialName)
 {
     tm* wTime;
     if(status == true)
@@ -208,7 +215,7 @@ void AccountP::withdraw(double amount)
     }
 }
 
-void AccountP::deposit(double amount)
+void AccountP::deposit(double amount, string bankOfficialName)
 {
     tm* dTime;
     if(status == true)
@@ -278,7 +285,8 @@ void AccountP:: setMonTerm(double amount)
    monthlyServiceFee = amount;
 }
 
-double AccountP:: getMonTerm()
+
+double AccountP:: getMonTerm() const
 {
    return monthlyServiceFee;
 }
@@ -354,4 +362,6 @@ void AccountP:: printTransactions()
       cout<< transactions[i]<< endl;
    }
 }
+
 #endif
+
