@@ -17,6 +17,8 @@ class AccountHolder
 
     public:
         AccountHolder(string, string, string, string, string, string);
+        Account findAccount(int);
+        Account & getAccountAt(int);
         void withdraw(int, double);
         void deposit(int, double);
         void setId(int);
@@ -34,9 +36,12 @@ class AccountHolder
         string getLogin() const;
         double getAccountBalance(int) const;
         void createCheckingAccount(int);
-        void createSavingsAccount(int, int);
-        void createCDAccount(int, int, int);
+        void createSavingsAccount(int, double);
+        void createCDAccount(int, double, double);
         void changePassword(string);
+        int numberOfAccounts() const;
+        vector<Account> getAccounts();
+        string getType(int);
 };
 
 AccountHolder::AccountHolder(string FirstName = "", string LastName = "", string Address = "", string PhoneNumber = "", string Password = "", string Login = "")
@@ -47,6 +52,58 @@ AccountHolder::AccountHolder(string FirstName = "", string LastName = "", string
     phoneNumber = PhoneNumber;
     password = Password;
     login = Login;
+}
+
+string AccountHolder::getType(int accountNumber)
+{
+    for(int i = 0; i < accounts.size(); i++)
+    {
+        if(accounts[i].getAccountNumber() == accountNumber)
+        {
+            return accounts[i].getType();
+        }
+    }
+}
+
+Account & AccountHolder::getAccountAt(int index)
+{
+    return accounts[index];
+}
+
+vector<Account> AccountHolder::getAccounts()
+{
+    return accounts;
+}
+
+int AccountHolder::numberOfAccounts() const
+{
+    return accounts.size();
+}
+
+Account AccountHolder::findAccount(int accountNumber)
+{
+
+    bool found = false;
+
+    int location = 0;
+
+    for(int i = 0; i < accounts.size(); i++)
+    {
+        if(accounts[i].getAccountNumber() == accountNumber)
+        {
+            location = i;
+            found = true;
+        }
+    }
+
+    if(found)
+    {
+        return accounts[location];
+    }
+    else
+    {
+        cout << "Account with account number: " << accountNumber << " does not exist\n";
+    }
 }
 
 void AccountHolder::withdraw(int accountNumber, double amount)
@@ -94,7 +151,7 @@ void AccountHolder::deposit(int accountNumber, double amount)
 
     if(found)
     {
-        if(amount > 0)
+        if(amount > 0.0)
         {
             accounts[location].deposit(amount);
         }
@@ -208,6 +265,7 @@ void AccountHolder::createCheckingAccount(int accountNumber)
     if(!found)
     {
         Account newAccount(accountNumber);
+        newAccount.setType("C");
         accounts.push_back(newAccount);
     }
     else
@@ -216,7 +274,7 @@ void AccountHolder::createCheckingAccount(int accountNumber)
     }
 }
 
-void AccountHolder::createSavingsAccount(int accountNumber, int interestRate)
+void AccountHolder::createSavingsAccount(int accountNumber, double interestRate)
 {
     bool found = false;
     for(int i = 0; i < accounts.size(); i++)
@@ -231,6 +289,7 @@ void AccountHolder::createSavingsAccount(int accountNumber, int interestRate)
     {
         Account newAccount(accountNumber);
         newAccount.setInterestRate(interestRate);
+        newAccount.setType("S");
         accounts.push_back(newAccount);
     }
     else
@@ -239,7 +298,7 @@ void AccountHolder::createSavingsAccount(int accountNumber, int interestRate)
     }
 }
 
-void AccountHolder::createCDAccount(int accountNumber, int interestRate, int term)
+void AccountHolder::createCDAccount(int accountNumber, double interestRate, double term)
 {
     bool found = false;
     for(int i = 0; i < accounts.size(); i++)
@@ -259,6 +318,7 @@ void AccountHolder::createCDAccount(int accountNumber, int interestRate, int ter
         Account newAccount(accountNumber);
         newAccount.setInterestRate(interestRate);
         newAccount.setTermLength(term);
+        newAccount.setType("CD");
         accounts.push_back(newAccount);
     }
     else

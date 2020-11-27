@@ -9,12 +9,15 @@ using namespace std;
 class Account
 {
     private:
-        string holderFirstName, holderLastName, phoneNumber, address;
+        string holderFirstName, holderLastName, phoneNumber, address, type;
         double interestRate, termLength, balance = 0.0;
         int accountNumber;
+        bool status = true;
 
     public:
         Account(int);
+        bool isActive() const;
+        void setStatus(string); 
         string getFirstName() const;
         string getLastName() const;
         string getPhoneNumber() const;
@@ -31,11 +34,43 @@ class Account
         void setTermLength(double);
         void withdraw(double);
         void deposit(double);
+        void setType(string);
+        string getType() const;
 
 };
 
 Account::Account(int AccountNumber){
     accountNumber = AccountNumber;
+}
+
+void Account::setType(string Type)
+{
+    type = Type;
+}
+
+string Account::getType() const
+{
+    return type;
+}
+
+void Account::setStatus(string active)
+{
+    if(active == "active" || active == "Active"){
+        status = true;
+    }
+    else if(active == "inactive" || active =="Inactive")
+    {
+        status = false;
+    }
+    else
+    {
+        cout << "Please enter a valid status\n";
+    }
+}
+
+bool Account::isActive() const
+{
+    return status;
 }
 
 string Account::getFirstName() const
