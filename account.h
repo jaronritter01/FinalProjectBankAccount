@@ -189,7 +189,7 @@ void AccountP::withdraw(double amount, string bankOfficialName)
                year = to_string(wTime->tm_year + 1900);
                dateLine = month + "/" + day + "/" + year;
                
-               transactions.push_back(dateLine + " withdrew $" + to_string(amount)); 
+               transactions.push_back(dateLine + " withdrew $" + to_string(amount) + "Official: " + bankOfficialName); 
                            
            }
            else
@@ -232,7 +232,7 @@ void AccountP::deposit(double amount, string bankOfficialName)
                interestRate = 0;
             }
                
-            transactions.push_back(dateLine + " deposited $" + to_string(amount));             
+            transactions.push_back(dateLine + " deposited $" + to_string(amount) + "Official: " + bankOfficialName);             
        }
        else
        {
@@ -351,7 +351,7 @@ void AccountP:: printTransactions()
 {
    for(int i =0; i < transactions.size();i++)
    {
-      cout<< transactions[i]<< endl;
+      cout << transactions[i]<< endl;
    }
 }
 #endif
