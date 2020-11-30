@@ -21,6 +21,7 @@ class BankOfficial
         void openAccount(AccountHolder &, int, double);
         void openAccount(AccountHolder &, int, double, double);
         void closeAccount(AccountHolder &, int);
+        void openAccountD(AccountHolder &,int);
         void deposit(AccountHolder &, int, double);
         void withdraw(AccountHolder &, int, double);
         void search(vector<AccountHolder>, int);
@@ -36,6 +37,7 @@ class BankOfficial
         void setLogin(string);
         string getLogin() const;
         void setPassword(string);
+        string getPassword();
 };
 
 BankOfficial::BankOfficial(string FirstName ="", string LastName="", int ID=0, string Login="", string Password="")
@@ -48,10 +50,16 @@ BankOfficial::BankOfficial(string FirstName ="", string LastName="", int ID=0, s
     password = Password;
 }
 
+string BankOfficial::getPassword()
+{
+   return password;
+}
+
 void BankOfficial::setPassword(string newPassword)
 {
     password = newPassword;
 }
+
 
 string BankOfficial::getLogin() const
 {
@@ -167,7 +175,7 @@ void BankOfficial::closeAccount(AccountHolder &AccHolder, int accountNumber)
 
         if(found)
         {
-            accounts[location].setStatus("inactive");
+            accounts[location].setStatus(false);
             cout << "Account succesfully closed\n";
         }
         else
@@ -180,6 +188,42 @@ void BankOfficial::closeAccount(AccountHolder &AccHolder, int accountNumber)
         cout <<"This account is not active\n";
     }
 }
+
+void BankOfficial::openAccountD(AccountHolder &AccHolder, int accountNumber)
+{
+    if(status)
+    {
+        vector<AccountP> accounts = AccHolder.getAccounts();
+
+        bool found = false;
+
+        int location = 0;
+
+        for(int i = 0; i < AccHolder.numberOfAccounts(); i ++)
+        {
+            if(accounts[i].getAccountNumber() == accountNumber)
+            {
+                location = i;
+                found = true;
+            }
+        }
+
+        if(found)
+        {
+            accounts[location].setStatus(true);
+            cout << "Account succesfully closed\n";
+        }
+        else
+        {
+            cout << "An account with this account number was not found\n";
+        }
+    }
+    else
+    {
+        cout <<"This account is not active\n";
+    }
+}
+
 
 void BankOfficial::deposit(AccountHolder &accHldr, int accountNumber, double amount)
 {
