@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "account.h"
+#include "AccountP.h"
 
 using namespace std;
 
@@ -32,9 +32,10 @@ class AccountHolder
         void setPhoneNumber(string);
         string getPhoneNumber() const;
         void setPassword(string);
+        string getPassword();
         void setLogin(string);
         string getLogin() const;
-        double getAccountBalance(int) const;
+        double getAccountBalance(int);
         void createCheckingAccount(int);
         void createSavingsAccount(int, double);
         void createCDAccount(int, double, double);
@@ -42,6 +43,8 @@ class AccountHolder
         int numberOfAccounts() const;
         vector<AccountP> & getAccounts();
         string getType(int);
+        void printAccounts();
+        void printAccountInfo(int);
 };
 
 AccountHolder::AccountHolder(string FirstName = "", string LastName = "", string Address = "", string PhoneNumber = "", string Password = "", string Login = "")
@@ -63,6 +66,7 @@ string AccountHolder::getType(int accountNumber)
             return accounts[i].getType();
         }
     }
+    return "account doesnt exsist";
 }
 
 AccountP & AccountHolder::getAccountAt(int index)
@@ -79,7 +83,7 @@ int AccountHolder::numberOfAccounts() const
 {
     return accounts.size();
 }
-
+/*
 AccountP AccountHolder::findAccount(int accountNumber)
 {
 
@@ -105,7 +109,7 @@ AccountP AccountHolder::findAccount(int accountNumber)
         cout << "Account with account number: " << accountNumber << " does not exist\n";
     }
 }
-
+*/
 void AccountHolder::withdraw(int accountNumber, double amount, string BankOfficialName)
 {
     bool found = false;
@@ -231,23 +235,24 @@ int AccountHolder::getId() const
     return id;
 }
 
-double AccountHolder::getAccountBalance(int accountNumber) const
+string AccountHolder :: getPassword()
+{
+   return password;
+}
+
+double AccountHolder::getAccountBalance(int accountNumber) 
 {
     bool found = false;
     for(int i = 0; i < accounts.size(); i++)
     {
         if(accounts[i].getAccountNumber() == accountNumber)
         {
-            found = true;
-            return accounts[i].getBalance();
+            cout<<accounts[i].getBalance()<< endl;
+            return true;
         }
     }
 
-    if(!found)
-    {
-        cout << "This Account does not exist\n";
-        return -1;
-    }
+    return false;
 }
 
 void AccountHolder::createCheckingAccount(int accountNumber)
@@ -330,5 +335,56 @@ void AccountHolder::createCDAccount(int accountNumber, double interestRate, doub
 void AccountHolder::changePassword(string newPassword)
 {
     password = newPassword;
+}
+
+void AccountHolder:: printAccounts()
+{
+   for(int i= 0; i < accounts.size(); i++)
+   {
+      cout<<to_string(accounts[i].getAccountNumber()) << endl;
+      cout<<accounts[i].getType() << endl;
+   }
+}
+
+void AccountHolder::printAccountInfo(int accountNumber)
+{
+
+    bool found = false;
+
+    int location = 0;
+
+    for(int i = 0; i < accounts.size(); i++)
+    {
+        if(accounts[i].getAccountNumber() == accountNumber)
+        {
+            location = i;
+            found = true;
+        }
+    }
+
+    if(found)
+    {
+        cout<<"Last Open " + accounts[location].getDateLastOpen()<<endl;
+        cout<<"Type " + accounts[location].getType()<<endl;
+        cout<<"Balance " + to_string(accounts[location].getBalance())<<endl;
+        if(accounts[location].getType() != "Checking Account")
+        {
+            cout<<"Interest " + to_string(accounts[location].getInterest())<<endl;
+        }
+        if(accounts[location].getType() == "Custom Account")
+        {
+            cout<<"Monthly service fee " + to_string(accounts[location].getMonTerm()) << endl;
+        }
+        if(accounts[location].getType() == "CD Accounts")
+        {
+            cout<<"Date of Maturity " + accounts[location].getMaturity() <<endl;
+        }
+        cout<< "transactions" << endl;
+        accounts[location].printTransactions();
+    }
+    else
+    {
+        cout << "Account with account number: " << accountNumber << " does not exist\n";
+    }
 }
 #endif
