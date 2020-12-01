@@ -23,6 +23,7 @@ class Admin
         string getLogin() const;
         void setLogin(string);
         void setPassword(string);
+        string getPassword();
         void setID(int);
         int getID() const;
         void enableBankOfficial(BankOfficial &);
@@ -164,6 +165,10 @@ void Admin::setID(int newId)
 void Admin::setPassword(string newPassword)
 {
     password = newPassword;
+}
+
+string Admin::getPassword(){
+    return password;
 }
 
 void Admin::setLogin(string Login)
