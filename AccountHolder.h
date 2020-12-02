@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "AccountP.h"
+#include "account.h"
 
 using namespace std;
 
@@ -18,7 +18,7 @@ class AccountHolder
     public:
         AccountHolder(string, string, string, string, string, string);
         AccountP findAccount(int);
-        AccountP & getAccountAt(int);
+        AccountP &getAccountAt(int);
         void withdraw(int, double, string);
         void deposit(int, double, string);
         void setId(int);
@@ -45,6 +45,7 @@ class AccountHolder
         string getType(int);
         void printAccounts();
         void printAccountInfo(int);
+        void addAccount(AccountP &);
 };
 
 AccountHolder::AccountHolder(string FirstName = "", string LastName = "", string Address = "", string PhoneNumber = "", string Password = "", string Login = "")
@@ -55,6 +56,11 @@ AccountHolder::AccountHolder(string FirstName = "", string LastName = "", string
     phoneNumber = PhoneNumber;
     password = Password;
     login = Login;
+}
+
+void AccountHolder::addAccount(AccountP &newAccount)
+{
+    accounts.push_back(newAccount);
 }
 
 string AccountHolder::getType(int accountNumber)

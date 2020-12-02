@@ -37,7 +37,7 @@ class BankOfficial
         void setLogin(string);
         string getLogin() const;
         void setPassword(string);
-        string getPassword();
+        string getPassword() const;
 };
 
 BankOfficial::BankOfficial(string FirstName ="", string LastName="", int ID=0, string Login="", string Password="")
@@ -50,7 +50,7 @@ BankOfficial::BankOfficial(string FirstName ="", string LastName="", int ID=0, s
     password = Password;
 }
 
-string BankOfficial::getPassword()
+string BankOfficial::getPassword() const
 {
    return password;
 }

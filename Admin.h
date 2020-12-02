@@ -35,15 +35,21 @@ class Admin
         void setUserPassword(Admin &, string);
         void modify(AccountHolder &, int, double);
         void modify(AccountHolder &, int, double, double);
+        string getPassword() const;
 };
 
-Admin::Admin(string FirstName, string LastName, string Login, string Password, int ID)
+Admin::Admin(string FirstName="", string LastName="", string Login="", string Password="", int ID=0)
 {
     firstName = FirstName;
     lastName = LastName;
     login = Login;
     password = Password;
     id = ID;
+}
+
+string Admin::getPassword() const
+{
+    return password;
 }
 
 void Admin::modify(AccountHolder &accHldr, int accountNumber, double intRate)

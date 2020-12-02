@@ -5,6 +5,7 @@
 #include <iostream>
 #include <time.h>
 #include <vector>
+#include "Transaction.h"
 
 using namespace std;
 
@@ -20,7 +21,8 @@ class AccountP
         tm* lastOpen;
         tm* timeClosed;
         tm* maturity;
-        vector<string> transactions;
+        int numOfTran;
+        vector<Transaction> transactions;
         
 
     public:
@@ -46,6 +48,7 @@ class AccountP
         void closeAccount();
         void setCloseAccountFile(string);
         void setTerm(int);
+        double getTerm() const;
         void setMonTerm(double);
         double getMonTerm();
         void calculateInt();
@@ -53,7 +56,9 @@ class AccountP
         void setMaturity();
         bool checkMaturity();
         void printTransactions();
-        
+        void addTransation(Transaction);
+        int numberOfTransactions() const;
+        Transaction &getTransactionAt(int);
 
 };
 
@@ -62,6 +67,26 @@ AccountP::AccountP(int newAccountNumber, double newBalance)
     accountNumber = newAccountNumber;
     balance = newBalance;  
     status = true;
+}
+
+Transaction &AccountP::getTransactionAt(int index)
+{
+   return transactions[index];
+}
+
+double AccountP::getTerm() const
+{
+   return term;
+}
+
+int AccountP::numberOfTransactions() const
+{
+   return transactions.size();
+}
+
+void AccountP::addTransation(Transaction newTransaction)
+{
+   transactions.push_back(newTransaction);
 }
 
 int AccountP:: getAccountNumber()
@@ -208,14 +233,20 @@ void AccountP::withdraw(double amount, string bankOfficialName)
                time(&withdrawTime);
                wTime = localtime(&withdrawTime);
                
-               string dateLine, day, month, year;
-               day = to_string(wTime->tm_mday);
-               month = to_string(wTime->tm_mon + 1);
-               year = to_string(wTime->tm_year + 1900);
-               dateLine = month + "/" + day + "/" + year;
+               int day, month, year;
+               day = wTime->tm_mday;
+               month = wTime->tm_mon + 1;
+               year = wTime->tm_year + 1900;
                
-               transactions.push_back(dateLine + " withdrew $" + to_string(amount) + "Official: " + bankOfficialName); 
-                           
+               Transaction newTransation;
+               newTransation.date[0] = month;
+               newTransation.date[1] = day;
+               newTransation.date[2] = year;
+               newTransation.action = "Withdraw";
+               newTransation.amount = amount;
+               newTransation.official = bankOfficialName;
+               transactions.push_back(newTransation); 
+
            }
            else
            {
@@ -246,18 +277,27 @@ void AccountP::deposit(double amount, string bankOfficialName)
             time(&depositTime);
             dTime = localtime(&depositTime);
                
-            string dateLine, day, month, year;
-            day = to_string(dTime->tm_mday);
-            month = to_string(dTime->tm_mon + 1);
-            year = to_string(dTime->tm_year + 1900);
-            dateLine = month + "/" + day + "/" + year;
+            int day, month, year;
+            day = dTime->tm_mday;
+            month = dTime->tm_mon + 1;
+            year = dTime->tm_year + 1900;
+
+               
+            Transaction newTransation;
+            newTransation.date[0] = month;
+            newTransation.date[1] = day;
+            newTransation.date[2] = year;
+            newTransation.action = "Deposit";
+            newTransation.amount = amount;
+            newTransation.official = bankOfficialName;
+            transactions.push_back(newTransation); 
             
             if(term != 0 && checkMaturity() == false)
             {
                interestRate = 0;
             }
                
-            transactions.push_back(dateLine + " deposited $" + to_string(amount) + "Official: " + bankOfficialName);             
+            transactions.push_back(newTransation);             
        }
        else
        {
@@ -378,7 +418,7 @@ void AccountP:: printTransactions()
 {
    for(int i =0; i < transactions.size();i++)
    {
-      cout<< transactions[i]<< endl;
+      cout << transactions[i].date[0] << '/' << transactions[i].date[1] << '/' << transactions[i].date[2] << " " << transactions[i].action << " " << transactions[i].amount << " " << "Official: " << transactions[i].official;
    }
 }
 #endif

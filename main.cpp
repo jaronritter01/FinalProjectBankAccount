@@ -1,9 +1,11 @@
 #include <iostream>
-#include "AccountP.h"
+#include "account.h"
 #include "AccountHolder.h"
-#include "bankOfficial.h"
+#include "BankOfficial.h"
 #include "Admin.h"
 #include <vector>
+#include <list>
+#include <fstream>
 
 using namespace std;
 
@@ -15,8 +17,162 @@ void handleOfficialUser(string, int, vector<BankOfficial>&, vector<AccountHolder
 void searchForAccountHolder(vector<AccountHolder>& accountHolders,vector<BankOfficial>& bankOfficials, int location);
 bool checkIfNumberI(string);
 bool checkIfNumberD(string);
+string encrypt(string input);
+string decrypt(string input);
 
 int main() {
+   
+   /*
+    fstream inputFile;
+    inputFile.open("input.txt"); 
+    string line = "";
+    vector <BankOfficial> bankOfficials;
+    vector <AccountHolder> accountHolders;
+    Admin admin;
+
+    while(getline(inputFile, line))
+    {
+        if(line == "ADMIN")
+        {
+            getline(inputFile, line);
+
+            string firstName = line.substr(0, line.find(" ")); //first name
+            line = line.substr(line.find(" ")+1, line.length());
+            
+            string lastName = line.substr(0, line.find(" ")); // last name
+            line = line.substr(line.find(" ")+1, line.length());
+
+            string login = line.substr(0, line.find(" ")); // login
+            line = line.substr(line.find(" ")+1, line.length());
+
+            string password = decrypt(line.substr(0, line.find(" "))); // password
+            line = line.substr(line.find(" ")+1, line.length());
+
+            int id = stoi(line); // ID
+
+            admin.setFirstName(firstName);
+            admin.setLastName(lastName);
+            admin.setID(id);
+            admin.setPassword(password);
+            admin.setLogin(login);
+        }
+        else if(line == "BANKOFFICIAL")
+        {
+            getline(inputFile, line);
+
+            string firstName = line.substr(0, line.find(" ")); // first name
+            line = line.substr(line.find(" ")+1, line.length());
+
+            string lastName = line.substr(0, line.find(" ")); // last name
+            line = line.substr(line.find(" ")+1, line.length());
+
+            string login = line.substr(0, line.find(" ")); // login
+            line = line.substr(line.find(" ")+1, line.length());
+
+            string password = decrypt(line.substr(0, line.find(" "))); // password
+            line = line.substr(line.find(" ")+1, line.length());
+
+            int id = stoi(line); // ID
+
+            BankOfficial newBankOfficial(firstName, lastName, id, login, password);
+            bankOfficials.push_back(newBankOfficial);
+        }
+        else if(line == "ACCOUNTHOLDER")
+        {
+            getline(inputFile, line);
+
+            string firstName = line.substr(0, line.find(" ")); // first name 
+            line = line.substr(line.find(" ")+1, line.length());
+
+            string lastName = line.substr(0, line.find(" ")); // last name
+            line = line.substr(line.find(" ")+1, line.length());
+
+            string phoneNumber = line.substr(0, line.find(" ")); // phone number
+            line = line.substr(line.find(" ")+1, line.length());
+
+            string login = line.substr(0, line.find(" ")); // login
+            line = line.substr(line.find(" ")+1, line.length());
+
+            string password = decrypt(line.substr(0, line.find(" "))); // password
+            line = line.substr(line.find(" ")+1, line.length()); 
+
+            string address = line; // address (might contain spaces)
+
+            AccountHolder newAccountHolder(firstName, lastName, address, phoneNumber, password, login);
+
+            getline(inputFile, line);
+            int numberOfAccounts = stoi(line); 
+
+            for(int i = 0; i < numberOfAccounts; i++)
+            {
+                getline(inputFile, line);
+
+                int accountNumber = stoi(line.substr(0, line.find(" "))); //reads in the account number
+                line = line.substr(line.find(" ")+1, line.length());
+
+                double balance = stod(line.substr(0, line.find(" "))); // reads in the balance
+                line = line.substr(line.find(" ")+1, line.length());
+
+                double interestRate = stod(line.substr(0, line.find(" "))); // reads in the interest rate
+                line = line.substr(line.find(" ")+1, line.length());
+
+                double termLength = stod(line); // reads in the term Length
+
+                AccountP newAccount(accountNumber, balance); // initalizes newAccount
+                newAccount.setInterest(interestRate); //sets interest
+                newAccount.setTerm(termLength); //sets term
+
+                getline(inputFile, line); // reads number of transactions for this account;
+
+                
+                int numOfTransactions = stoi(line);
+
+                cout << numOfTransactions << endl;
+
+                for(int j = 0; j < numOfTransactions; j++)
+                {
+                    getline(inputFile, line); // gets transaction record
+                        
+                    Transaction transaction;
+
+                    string dateLine = line.substr(0,line.find(" "));
+                    line = line.substr(line.find(" ")+1, line.length());
+
+                    transaction.date[0] = stoi(dateLine.substr(0,'/')); // sets month for this transaction
+                    dateLine = dateLine.substr(dateLine.find('/')+1, dateLine.length());
+                    transaction.date[1] = stoi(dateLine.substr(0,'/')); // sets day 
+                    dateLine = dateLine.substr(dateLine.find('/')+1, dateLine.length());
+                    transaction.date[2] = stoi(dateLine); // sets year 
+
+                    transaction.action = line.substr(0,line.find(" ")); // sets action taken
+                    line = line.substr(line.find(" ")+1, line.length());
+
+                    string amountLine = line.substr(0,line.find(" "));
+                    transaction.amount = stod(amountLine.substr(1, amountLine.length())); // chops off the dollar sign
+                    line = line.substr(line.find(" ")+1, line.length());
+
+                    line = line.substr(line.find(" ")+1, line.length()); // gets rid of the word Official:
+
+                    transaction.official = line; //sets the name of the official that made the trasaction
+
+                    newAccount.addTransation(transaction); // adds this tranaction to the transaction list
+
+                }
+
+                newAccountHolder.addAccount(newAccount); //adds the account to the list of accounts for an account holder
+            }
+            accountHolders.push_back(newAccountHolder); 
+            
+        }
+        else
+        {
+            cout << "Invalid Data\n";
+        }
+
+        
+    }
+    */
+
    
   Admin admin("cole","kassing","ck115","butt",12345);
   vector<BankOfficial> bankOfficials;
@@ -32,18 +188,20 @@ int main() {
       cout<<"Login as Bank Official[2]:" << endl; 
       cout<<"Login as Account Holder[3]:" << endl;
       cout<<"Exit[4]:\n";
-      getline(cin,userInput);
+      getline(cin, userInput);
       
       if(userInput == "1")
       {
-         string adminPassword;
+         string adminPassword, adminsLogin;
          
-         cout<<"Enter Admins Password:\n"<<endl;
-         getline(cin, adminPassword); 
+         cout<<"Enter Admins Login: ";
+         getline(cin, adminsLogin); 
+         cout<<"Enter Admins password: ";
+         getline(cin, adminPassword);
          
-         if(adminPassword == admin.getPassword())
+         if(adminPassword == admin.getPassword() && adminsLogin == admin.getLogin())
          {
-            string adminChoice; 
+            string adminChoice = "0"; 
             
             while(adminChoice != "4")
             {
@@ -51,6 +209,8 @@ int main() {
                cout<<"Acount Holders[2]:" <<endl;
                cout<<"Change admin Password[3]:"<<endl;
                cout<<"Exit[4]:\n";
+
+               cin >> adminChoice;
                
                if(adminChoice == "1")
                {
@@ -74,7 +234,7 @@ int main() {
          }
          else
          {
-            cout<<"Incorrect Password"<<endl; 
+            cout<<"Incorrect UserName or Password"<<endl; 
          }
          
       }
@@ -140,6 +300,55 @@ int main() {
          cout<<"invalid Entry"<<endl;
       }
   }
+
+  //start of output handling
+
+  /*
+  fstream outFile;
+  outFile.open("outputFile.txt");
+
+  string adminDetails = admin.getFirstName() + " " + admin.getLastName() + " " + admin.getLogin() + " " + encrypt(admin.getPassword()) + " " + to_string(admin.getID());
+
+  outFile << "ADMIN\n";
+  outFile << adminDetails << "\n";
+
+  string bankOfficialDetails = "", accountHolderDetails = "";
+
+  for(int i = 0; i < bankOfficials.size(); i++)
+  {
+     outFile << "BANKOFFICIAL\n";
+     bankOfficialDetails = bankOfficials[i].getFirstName() + " " + bankOfficials[i].getLastName() + " " + bankOfficials[i].getLogin() + " " + encrypt(bankOfficials[i].getPassword()) 
+                           + " " + to_string(bankOfficials[i].getID());
+     outFile << bankOfficialDetails << '\n';
+  }
+
+  cout << accountHolders.size() << endl;
+  
+  for(int i = 0; i < accountHolders.size(); i++)
+  {
+     outFile << "ACCOUNTHOLDER\n";
+     accountHolderDetails = accountHolders[i].getFirstName() + " " + accountHolders[i].getLastName() + " " + accountHolders[i].getPhoneNumber() + " " + accountHolders[i].getLogin() + " " 
+                            + encrypt(accountHolders[i].getPassword()) + " " + accountHolders[i].getAddress();
+
+      outFile << accountHolderDetails << '\n';
+      outFile << accountHolders[i].numberOfAccounts() << '\n';
+
+      for(int j = 0; j < accountHolders[i].numberOfAccounts(); j++)
+      {
+         AccountP currAcc = accountHolders[i].getAccountAt(j);
+         outFile << currAcc.getAccountNumber() << " " << currAcc.getBalance() << " " << currAcc.getInterest() << " " << currAcc.getTerm() << '\n';
+         outFile << currAcc.numberOfTransactions() << '\n';
+
+         for(int k = 0; k < 4; k++)
+         {
+            Transaction currTran = currAcc.getTransactionAt(k);
+            outFile << currTran.date[0] << "/" << currTran.date[1] << "/" << currTran.date[2] << " " << currTran.action << " " << "$" << currTran.amount << " " << "Official: " << currTran.official << "\n";
+         }
+         
+      }
+  }
+  */
+  
   
   return 0;
 }
@@ -337,6 +546,7 @@ void searchForAccountHolder(vector<AccountHolder>& accountHolders,vector<BankOff
          cout<<"invalid Entry"<<endl;
       }
    }
+   
 }
 
 void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationAH, vector<BankOfficial>& bankOfficials, int locationBO)
@@ -692,4 +902,20 @@ bool checkIfNumberD(string number)
       return false;
    }
    return true;
+}
+
+string encrypt(string input)
+{
+    for(int i = 0; i < input.length(); i++)
+            input[i] = input[i] + 2;
+
+    return input;
+}
+
+string decrypt(string input)
+{
+    for(int i = 0; i < input.length(); i++)
+            input[i] = input[i] - 2;
+
+    return input;
 }

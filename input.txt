@@ -1,0 +1,13 @@
+ADMIN
+Jaron Ritter jr1915 rcuuyqtf 10
+BANKOFFICIAL
+John Smith Login rcuuyqtf 11
+ACCOUNTHOLDER
+Josh Tiller 555-555-5555 Login rcuuyqtf Address 
+1
+123 10.0 0.0 0.0
+4
+10/2/2020 deposit $10.0 Official: John Smith
+10/3/2020 deposit $10.0 Official: John Smith
+10/4/2020 deposit $10.0 Official: John Smith
+10/5/2020 withdraw $20.0 Official: John Smith
