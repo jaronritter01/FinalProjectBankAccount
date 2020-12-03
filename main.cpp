@@ -46,7 +46,7 @@ int main() {
             string lastName = line.substr(0, line.find(" ")); // last name
             line = line.substr(line.find(" ")+1, line.length());
 
-            string login = line.substr(0, line.find(" ")); // login
+            string login = decrypt(line.substr(0, line.find(" "))); // login
             line = line.substr(line.find(" ")+1, line.length());
 
             string password = decrypt(line.substr(0, line.find(" "))); // password
@@ -70,7 +70,7 @@ int main() {
             string lastName = line.substr(0, line.find(" ")); // last name
             line = line.substr(line.find(" ")+1, line.length());
 
-            string login = line.substr(0, line.find(" ")); // login
+            string login = decrypt(line.substr(0, line.find(" "))); // login
             line = line.substr(line.find(" ")+1, line.length());
 
             string password = decrypt(line.substr(0, line.find(" "))); // password
@@ -94,7 +94,7 @@ int main() {
             string phoneNumber = line.substr(0, line.find(" ")); // phone number
             line = line.substr(line.find(" ")+1, line.length());
 
-            string login = line.substr(0, line.find(" ")); // login
+            string login = decrypt(line.substr(0, line.find(" "))); // login
             line = line.substr(line.find(" ")+1, line.length());
 
             string password = decrypt(line.substr(0, line.find(" "))); // password
@@ -326,7 +326,7 @@ int main() {
   fstream outFile;
   outFile.open("outputFile.txt");
 
-  string adminDetails = admin.getFirstName() + " " + admin.getLastName() + " " + admin.getLogin() + " " + encrypt(admin.getPassword()) + " " + to_string(admin.getID());
+  string adminDetails = admin.getFirstName() + " " + admin.getLastName() + " " + encrypt(admin.getLogin()) + " " + encrypt(admin.getPassword()) + " " + to_string(admin.getID());
 
   outFile << "ADMIN\n";
   outFile << adminDetails << "\n";
@@ -336,7 +336,7 @@ int main() {
   for(int i = 0; i < bankOfficials.size(); i++)
   {
      outFile << "BANKOFFICIAL\n";
-     bankOfficialDetails = bankOfficials[i].getFirstName() + " " + bankOfficials[i].getLastName() + " " + bankOfficials[i].getLogin() + " " + encrypt(bankOfficials[i].getPassword()) 
+     bankOfficialDetails = bankOfficials[i].getFirstName() + " " + bankOfficials[i].getLastName() + " " + encrypt(bankOfficials[i].getLogin()) + " " + encrypt(bankOfficials[i].getPassword()) 
                            + " " + to_string(bankOfficials[i].getID());
      outFile << bankOfficialDetails << '\n';
   }
@@ -346,7 +346,7 @@ int main() {
   for(int i = 0; i < accountHolders.size(); i++)
   {
      outFile << "ACCOUNTHOLDER\n";
-     accountHolderDetails = accountHolders[i].getFirstName() + " " + accountHolders[i].getLastName() + " " + accountHolders[i].getPhoneNumber() + " " + accountHolders[i].getLogin() + " " 
+     accountHolderDetails = accountHolders[i].getFirstName() + " " + accountHolders[i].getLastName() + " " + accountHolders[i].getPhoneNumber() + " " + encrypt(accountHolders[i].getLogin()) + " " 
                             + encrypt(accountHolders[i].getPassword()) + " " + accountHolders[i].getAddress();
 
       outFile << accountHolderDetails << '\n';
