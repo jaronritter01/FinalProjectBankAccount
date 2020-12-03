@@ -1,5 +1,5 @@
 #include <iostream>
-#include "account.h"
+#include "AccountP.h"
 #include "AccountHolder.h"
 #include "BankOfficial.h"
 #include "Admin.h"
@@ -10,7 +10,11 @@
 using namespace std;
 
 void handleOfficialAdmin(vector<BankOfficial>& bankOfficials);
+void handleHoldersAdmin(vector<AccountHolder>& accountHolders);
 void modifyOfficial(vector<BankOfficial>&, int);
+void modifyHolder(vector<AccountHolder>&, int);
+void createAccounts(vector<AccountHolder>&, int);
+void modifyAccounts(vector<AccountHolder>&, int);
 void handleAccountUser(string userName, int locationInV, vector<AccountHolder>& accountHolders);
 void handleAccountOfficial(vector<AccountHolder>&, int, vector<BankOfficial>&, int);
 void handleOfficialUser(string, int, vector<BankOfficial>&, vector<AccountHolder>&);
@@ -29,27 +33,21 @@ int main() {
     vector <BankOfficial> bankOfficials;
     vector <AccountHolder> accountHolders;
     Admin admin;
-
     while(getline(inputFile, line))
     {
         if(line == "ADMIN")
         {
             getline(inputFile, line);
-
             string firstName = line.substr(0, line.find(" ")); //first name
             line = line.substr(line.find(" ")+1, line.length());
             
             string lastName = line.substr(0, line.find(" ")); // last name
             line = line.substr(line.find(" ")+1, line.length());
-
             string login = line.substr(0, line.find(" ")); // login
             line = line.substr(line.find(" ")+1, line.length());
-
             string password = decrypt(line.substr(0, line.find(" "))); // password
             line = line.substr(line.find(" ")+1, line.length());
-
             int id = stoi(line); // ID
-
             admin.setFirstName(firstName);
             admin.setLastName(lastName);
             admin.setID(id);
@@ -59,106 +57,73 @@ int main() {
         else if(line == "BANKOFFICIAL")
         {
             getline(inputFile, line);
-
             string firstName = line.substr(0, line.find(" ")); // first name
             line = line.substr(line.find(" ")+1, line.length());
-
             string lastName = line.substr(0, line.find(" ")); // last name
             line = line.substr(line.find(" ")+1, line.length());
-
             string login = line.substr(0, line.find(" ")); // login
             line = line.substr(line.find(" ")+1, line.length());
-
             string password = decrypt(line.substr(0, line.find(" "))); // password
             line = line.substr(line.find(" ")+1, line.length());
-
             int id = stoi(line); // ID
-
             BankOfficial newBankOfficial(firstName, lastName, id, login, password);
             bankOfficials.push_back(newBankOfficial);
         }
         else if(line == "ACCOUNTHOLDER")
         {
             getline(inputFile, line);
-
             string firstName = line.substr(0, line.find(" ")); // first name 
             line = line.substr(line.find(" ")+1, line.length());
-
             string lastName = line.substr(0, line.find(" ")); // last name
             line = line.substr(line.find(" ")+1, line.length());
-
             string phoneNumber = line.substr(0, line.find(" ")); // phone number
             line = line.substr(line.find(" ")+1, line.length());
-
             string login = line.substr(0, line.find(" ")); // login
             line = line.substr(line.find(" ")+1, line.length());
-
             string password = decrypt(line.substr(0, line.find(" "))); // password
             line = line.substr(line.find(" ")+1, line.length()); 
-
             string address = line; // address (might contain spaces)
-
             AccountHolder newAccountHolder(firstName, lastName, address, phoneNumber, password, login);
-
             getline(inputFile, line);
             int numberOfAccounts = stoi(line); 
-
             for(int i = 0; i < numberOfAccounts; i++)
             {
                 getline(inputFile, line);
-
                 int accountNumber = stoi(line.substr(0, line.find(" "))); //reads in the account number
                 line = line.substr(line.find(" ")+1, line.length());
-
                 double balance = stod(line.substr(0, line.find(" "))); // reads in the balance
                 line = line.substr(line.find(" ")+1, line.length());
-
                 double interestRate = stod(line.substr(0, line.find(" "))); // reads in the interest rate
                 line = line.substr(line.find(" ")+1, line.length());
-
                 double termLength = stod(line); // reads in the term Length
-
                 AccountP newAccount(accountNumber, balance); // initalizes newAccount
                 newAccount.setInterest(interestRate); //sets interest
                 newAccount.setTerm(termLength); //sets term
-
                 getline(inputFile, line); // reads number of transactions for this account;
-
                 
                 int numOfTransactions = stoi(line);
-
                 cout << numOfTransactions << endl;
-
                 for(int j = 0; j < numOfTransactions; j++)
                 {
                     getline(inputFile, line); // gets transaction record
                         
                     Transaction transaction;
-
                     string dateLine = line.substr(0,line.find(" "));
                     line = line.substr(line.find(" ")+1, line.length());
-
                     transaction.date[0] = stoi(dateLine.substr(0,'/')); // sets month for this transaction
                     dateLine = dateLine.substr(dateLine.find('/')+1, dateLine.length());
                     transaction.date[1] = stoi(dateLine.substr(0,'/')); // sets day 
                     dateLine = dateLine.substr(dateLine.find('/')+1, dateLine.length());
                     transaction.date[2] = stoi(dateLine); // sets year 
-
                     transaction.action = line.substr(0,line.find(" ")); // sets action taken
                     line = line.substr(line.find(" ")+1, line.length());
-
                     string amountLine = line.substr(0,line.find(" "));
                     transaction.amount = stod(amountLine.substr(1, amountLine.length())); // chops off the dollar sign
                     line = line.substr(line.find(" ")+1, line.length());
-
                     line = line.substr(line.find(" ")+1, line.length()); // gets rid of the word Official:
-
                     transaction.official = line; //sets the name of the official that made the trasaction
-
                     newAccount.addTransation(transaction); // adds this tranaction to the transaction list
-
                 }
-
                 newAccountHolder.addAccount(newAccount); //adds the account to the list of accounts for an account holder
             }
             accountHolders.push_back(newAccountHolder); 
@@ -168,7 +133,6 @@ int main() {
         {
             cout << "Invalid Data\n";
         }
-
         
     }
     */
@@ -202,6 +166,7 @@ int main() {
          if(adminPassword == admin.getPassword() && adminsLogin == admin.getLogin())
          {
             string adminChoice = "0"; 
+            cout<<"Success"<<endl;
             
             while(adminChoice != "4")
             {
@@ -210,7 +175,7 @@ int main() {
                cout<<"Change admin Password[3]:"<<endl;
                cout<<"Exit[4]:\n";
 
-               cin >> adminChoice;
+               getline(cin, adminChoice);
                
                if(adminChoice == "1")
                {
@@ -218,6 +183,7 @@ int main() {
                }
                else if(adminChoice == "2")
                {
+                  handleHoldersAdmin(accountHolders);
                }
                else if(adminChoice == "3")
                {
@@ -294,6 +260,7 @@ int main() {
       }   
       else if(userInput == "4")
       {
+         cout<<"Goodbye"<<endl;
       }  
       else
       {
@@ -306,14 +273,10 @@ int main() {
   /*
   fstream outFile;
   outFile.open("outputFile.txt");
-
   string adminDetails = admin.getFirstName() + " " + admin.getLastName() + " " + admin.getLogin() + " " + encrypt(admin.getPassword()) + " " + to_string(admin.getID());
-
   outFile << "ADMIN\n";
   outFile << adminDetails << "\n";
-
   string bankOfficialDetails = "", accountHolderDetails = "";
-
   for(int i = 0; i < bankOfficials.size(); i++)
   {
      outFile << "BANKOFFICIAL\n";
@@ -321,7 +284,6 @@ int main() {
                            + " " + to_string(bankOfficials[i].getID());
      outFile << bankOfficialDetails << '\n';
   }
-
   cout << accountHolders.size() << endl;
   
   for(int i = 0; i < accountHolders.size(); i++)
@@ -329,16 +291,13 @@ int main() {
      outFile << "ACCOUNTHOLDER\n";
      accountHolderDetails = accountHolders[i].getFirstName() + " " + accountHolders[i].getLastName() + " " + accountHolders[i].getPhoneNumber() + " " + accountHolders[i].getLogin() + " " 
                             + encrypt(accountHolders[i].getPassword()) + " " + accountHolders[i].getAddress();
-
       outFile << accountHolderDetails << '\n';
       outFile << accountHolders[i].numberOfAccounts() << '\n';
-
       for(int j = 0; j < accountHolders[i].numberOfAccounts(); j++)
       {
          AccountP currAcc = accountHolders[i].getAccountAt(j);
          outFile << currAcc.getAccountNumber() << " " << currAcc.getBalance() << " " << currAcc.getInterest() << " " << currAcc.getTerm() << '\n';
          outFile << currAcc.numberOfTransactions() << '\n';
-
          for(int k = 0; k < 4; k++)
          {
             Transaction currTran = currAcc.getTransactionAt(k);
@@ -431,7 +390,7 @@ void handleAccountUser(string userName, int locationInV, vector<AccountHolder>& 
 void handleOfficialUser(string userName, int locationInV, vector<BankOfficial>& bankOfficials,vector<AccountHolder>& accountHolders)
 {
    string userEnter;
-   cout<<"Enter password for account";
+   cout<<"Enter password for account\n";
    int i = locationInV;
    
    getline(cin, userEnter);
@@ -443,12 +402,14 @@ void handleOfficialUser(string userName, int locationInV, vector<BankOfficial>& 
       string accountChoice;
       
       
-      while(accountChoice != "3");
+      while(accountChoice != "3")
       {
       
          cout<<"Search for Users[1]:" <<endl;
          cout<<"Access Users[2]:" << endl;
          cout<<"Exit[3]:\n";
+         
+         getline(cin,accountChoice);
          
          if(accountChoice == "1")
          {
@@ -505,9 +466,9 @@ void searchForAccountHolder(vector<AccountHolder>& accountHolders,vector<BankOff
    
    while(userEnter != "3")
    {
-      cout<<"Search by Login[1]:"<<endl;
+      cout<<"Search by account number2[1]:"<<endl;
       cout<<"Search by phoneNumber or last name[2]:"<< endl;
-      cout<<"Exit:\n";
+      cout<<"Exit[3]:\n";
       
       getline(cin, userEnter);
       
@@ -570,6 +531,8 @@ void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationA
          cout<<"deposit[3]:" << endl;
          cout<<"withdraw[4]:" << endl;
          cout<<"Exit[5]:\n";
+         
+         getline(cin, accountChoice);
          
          if(accountChoice == "1")
          {
@@ -687,34 +650,9 @@ void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationA
 
 void handleOfficialAdmin(vector<BankOfficial>& bankOfficials)
 {
-   string officalName;
-   int location = 0;
-   bool ifPresent = false; 
-         
-   cout<<"Enter Bank Official Login:\n";
-   getline(cin,officalName);
-         
-   for(int i =0; i < bankOfficials.size(); i++)
-   {
-      if (bankOfficials[i].getLogin() == officalName)
-      {
-         ifPresent = true;
-         location = i;
-      }
-   }
-         
-   if(ifPresent && bankOfficials[location].getStatus() == true)
-   {
-      string userEnter;
-      cout<<"Enter password for account";
-   
-      getline(cin, userEnter);
-   
-      string accountPassword = bankOfficials[location].getPassword();
-   
-      if(userEnter == accountPassword)
-      {
          string accountChoice;
+         cout<<"Success"<<endl;
+         cout<<"\n";
     
          while(accountChoice != "3")
          {
@@ -757,12 +695,29 @@ void handleOfficialAdmin(vector<BankOfficial>& bankOfficials)
                      cout<<"Enter login\n";
                      getline(cin,login);
                      
-                     cout<<"Enter password\n";
-                     getline(cin,password);
+                     for(int i =0; i < bankOfficials.size();i++)
+                     {
+                        if(bankOfficials[i].getLogin() == login)
+                        {
+                           value  = false;
+                        }
+                     }
                      
-                     BankOfficial newOfficial(firstName,lastName, id, login, password);
+                     if(value)
+                     {
+                        cout<<"Enter password\n";
+                        getline(cin,password);
                      
-                     bankOfficials.push_back(newOfficial);
+                        BankOfficial newOfficial(firstName,lastName, id, login, password);
+                     
+                        bankOfficials.push_back(newOfficial);
+                     
+                        cout<<"Account created"<<endl;
+                     }
+                     else
+                     {
+                        cout<<"login already exists choose another"<<endl;
+                     }
                   }
                   else
                   {
@@ -809,25 +764,16 @@ void handleOfficialAdmin(vector<BankOfficial>& bankOfficials)
             {
                cout<<"invalid Entry" <<endl; 
             }
-         }
-       }
-       else
-       {
-         cout<<"Password is Incorrect"<<endl;
-       }
-   }
-   else
-   {
-       cout<<"Account does not exsist or is closed " <<endl; 
-   }   
+         }   
 }
 
 void modifyOfficial(vector<BankOfficial>& bankOfficials, int location)
 {
    string userEnter; 
-   while(userEnter != "3");
+   
+   while(userEnter != "3")
    {
-      cout<<"activate/deactivate[1];"<<endl;
+      cout<<"activate/deactivate[1]:"<<endl;
       cout<<"change password[2]:"<<endl;
       cout<<"Exit[3]:\n";
       
@@ -871,9 +817,86 @@ void modifyOfficial(vector<BankOfficial>& bankOfficials, int location)
       {
          cout<<"Invalid Entry"<<endl;
       }
-   }
-   
-   
+   }  
+}
+
+void handleHoldersAdmin(vector<AccountHolder>& accountHolders)
+{   
+     
+         string accountChoice;
+    
+         while(accountChoice != "3")
+         {
+            cout<<"Create AccountHolder[1]:"<<endl;
+            cout<<"Modify holder/create account[2]:" <<endl; 
+            cout<<"Exit[3]:\n";
+            
+            getline(cin,accountChoice);
+            
+            if(accountChoice == "1")
+            {
+               string firstName,lastName,login,password,address, phoneNumber;
+            
+                     cout<<"Enter first Name\n";
+                     getline(cin,firstName);
+                     
+                     cout<<"Enter lastName\n";
+                     getline(cin,lastName);
+                     
+                     cout<<"Enter Adress\n";
+                     getline(cin,address);
+                     
+                     cout<<"Enter phone number\n";
+                     getline(cin, phoneNumber);
+                     
+                     cout<<"Enter login\n";
+                     getline(cin,login);
+                     
+                     cout<<"Enter password\n";
+                     getline(cin,password);
+                     
+                     
+                     AccountHolder newAccount(firstName,lastName,address,phoneNumber, password, login);
+                     
+                     accountHolders.push_back(newAccount);
+            }
+            else if(accountChoice == "2")
+            {
+               string officalName;
+               int location = 0;
+               bool ifPresent = true; 
+               
+               cout<<"Enter Bank Official Login:\n";
+               getline(cin,officalName);
+               
+               for(int i =0; i < accountHolders.size(); i++)
+               {
+                  if (accountHolders[i].getLogin() == officalName)
+                  {
+                     ifPresent = false;
+                     location = i;
+                  }
+               }
+               
+               if(ifPresent)
+               {
+                  modifyHolder(accountHolders, location);
+               }
+               else
+               {
+                  cout<<"Account does not exsist or is closed " <<endl; 
+               }
+            }
+            else if(accountChoice == "3")
+            {
+               cout<<"closing" <<endl;
+            }
+            else
+            {
+               cout<<"invalid Entry" <<endl; 
+            }
+         }
+       
 }
 
 bool checkIfNumberI(string number) 
@@ -890,6 +913,306 @@ bool checkIfNumberI(string number)
    return true;
 }
 
+void modifyHolder(vector<AccountHolder>& accountHolders, int location)
+{
+   string userEnter; 
+   while(userEnter != "5")
+   {
+      cout<<"Set Status of account[1]"<<endl;
+      cout<<"Add Accounts[2]"<<endl;
+      cout<<"Modify accounts[3]"<<endl;
+      cout<<"Changee password of holder[4]"<<endl;
+      cout<<"Exit[5]:\n";
+      
+      getline(cin,userEnter);
+      
+      if(userEnter == "1")
+      {
+         string id; 
+         int accountLocation;
+   
+         cout<<"Enter ID of Account\n";
+         getline(cin, id); 
+   
+         if(checkIfNumberI(id))
+         {
+            int ID = stoi(id);
+            bool ifPresent = false;
+      
+            for(int i =0; i < accountHolders[location].numberOfAccounts(); i++)
+            {
+               if (accountHolders[location].getAccountAt(i).getAccountNumber() == ID)
+               {
+                  ifPresent = true;
+                  accountLocation = i;
+               }
+            }
+         }
+         
+         string choice;
+      
+         cout<<"Set Active[1]"<<endl;
+         cout<<"Deactivate[2]\n";
+         getline(cin,choice);
+         
+         if(choice == "1")
+         {
+            accountHolders[location].getAccountAt(accountLocation).setStatus(true);
+         }
+         else if(choice == "2")
+         {
+            accountHolders[location].getAccountAt(accountLocation).setStatus(false);
+         }
+         else
+         {
+            cout<<"Invalid Entry"<<endl;
+         }
+      }
+      else if(userEnter == "2")
+      {
+         createAccounts(accountHolders, location);
+      }
+      else if(userEnter == "3")
+      {
+         modifyAccounts(accountHolders, location);
+      }
+      else if(userEnter == "4")
+      {
+         string password; 
+         
+         cout<<"Enter new password\n";
+         getline(cin,password);
+         
+         accountHolders[location].changePassword(password);    
+      }
+      else if(userEnter == "5")
+      {
+         cout<<"Closing"<<endl;
+      }
+      else
+      {
+         cout<<"Ivalid Entry"<<endl;
+      }
+   }
+}
+
+void createAccounts(vector<AccountHolder>& accountHolders, int location)
+{
+   string userEnter,id; 
+   
+   while(userEnter != "4")
+   {
+      cout<<"Create checking account[1]"<<endl;
+      cout<<"Create savings account[2]"<<endl;
+      cout<<"create CD account[3]"<<endl;
+      cout<<"Exit[4]\n";
+      getline(cin, userEnter);
+      
+      if(userEnter == "1")
+      {
+         
+         cout<<"Enter new id number\n";
+         getline(cin, id);
+         
+         if(checkIfNumberI(id))
+         {
+            int ID = stoi(id);
+            if(ID > 0)
+            {
+               accountHolders[location].createCheckingAccount(ID);
+            }
+            else
+            {
+               cout<<"Value must be positive" <<endl;
+            }
+         }
+         else
+         {
+            cout<<"Invalid Entry"<<endl;
+         } 
+      }
+      else if(userEnter == "2")
+      {
+         cout<<"Enter new id Number\n";
+         getline(cin,id); 
+         
+         if(checkIfNumberI(id))
+         {
+            int ID = stoi(id);
+            
+            if(ID > 0)
+            {
+               cout<<"Enter Interest\n";
+               getline(cin, id);
+            
+               if(checkIfNumberD(id))
+               {
+                  double Int = stod(id);
+                  if(Int > 0.0)
+                  {
+                     accountHolders[location].createSavingsAccount(ID,Int);
+                  }
+                  else
+                  {
+                     cout<<"Enter positive value"<<endl;
+                  }
+               }
+               else
+               {
+                  cout<<"invalid Entry"<<endl;
+               }
+            }
+            else
+            {
+               cout<<"Value must be positive" <<endl;
+            }
+         }
+         else
+         {
+            cout<<"Invlid Entry"<<endl;
+         }
+      }
+      else if(userEnter == "3")
+      {
+         cout<<"Enter new id Number\n";
+         getline(cin,id); 
+         
+         if(checkIfNumberI(id))
+         {
+            int ID = stoi(id);
+            if(ID > 0)
+            {
+               cout<<"Enter Interest\n";
+               getline(cin, id);
+            
+               if(checkIfNumberD(id))
+               {
+                  double Int = stod(id);
+                  if(Int > 0.0)
+                  {
+                     string term;
+                     
+                     cout<<"Enter term\n";
+                     getline(cin,term);
+                     
+                     if(checkIfNumberI(term))
+                     {
+                        int terms = stoi(term);
+                        
+                        if(terms >0)
+                        {
+                           accountHolders[location].createCDAccount(ID,Int,terms);
+                        }
+                        else
+                        {
+                           cout<<"Value must be Positive"<<endl;
+                        }
+                     }
+                     else
+                     {
+                        cout<<"Invalid Entry"<<endl;
+                     }
+                  }
+                  else
+                  {
+                     cout<<"Value must be positive"<<endl;
+                  }
+               }
+               else
+               {
+                  cout<<"Invalid Entry"<<endl;
+               }
+            }
+            else 
+            {
+               cout<<"Value must be  positive"<<endl;
+            }
+         }        
+         else
+         {
+            cout<<"Invlid Entry"<<endl;
+         }
+      }
+      else if(userEnter == "4")
+      {
+         cout<<"Closing"<<endl;
+      }
+      else
+      {
+         cout<<"Invalid Entry"<<endl;
+      }  
+   }
+}
+
+void modifyAccounts(vector<AccountHolder>& accountHolders,int location)
+{
+   string id; 
+   
+   cout<<"Enter ID of Account\n";
+   getline(cin, id); 
+   
+   if(checkIfNumberI(id))
+   {
+      int ID = stoi(id);
+      bool ifPresent = false;
+      int accountLocation;
+      
+      for(int i =0; i < accountHolders[location].numberOfAccounts(); i++)
+         {
+            if (accountHolders[location].getAccountAt(i).getAccountNumber() == ID)
+            {
+               ifPresent = true;
+               accountLocation = i;
+            }
+         }
+      
+      if(ifPresent)
+      {
+         if(accountHolders[location].getAccountAt(accountLocation).getType() == "C")
+         {
+            cout<<"Nothing can be changed"<<endl;
+         }
+         else if(accountHolders[location].getAccountAt(accountLocation).getType() == "S")
+         {
+            string intrest;
+            
+            cout<<"Enter new Interest\n"<<endl;
+            getline(cin, intrest);
+            
+            if(checkIfNumberI(intrest))
+            {
+               double Int = stod(intrest);
+               
+               if(Int > 0.0)
+               {
+                  accountHolders[location].getAccountAt(accountLocation).setInterest(Int);
+               }
+               else
+               {
+                  cout<<"Enter positive value"<<endl;
+               }
+            }
+            else
+            {
+               cout<<"Invalid Entry"<<endl;
+            }
+         }
+         else if(accountHolders[location].getAccountAt(accountLocation).getType() == "CD")
+         {
+            cout<<"Nothing Able to be Changed" <<endl;
+         }
+      }
+      else
+      {
+         cout<<"Account Doesent Exsist"<<endl;
+      }
+   }
+   else
+   {
+      cout<<"Not valid Entry"<<endl; 
+   }
+}
+
 bool checkIfNumberD(string number) 
 {
    //checks to see if the number is double or not 
@@ -903,6 +1226,8 @@ bool checkIfNumberD(string number)
    }
    return true;
 }
+
+
 
 string encrypt(string input)
 {
