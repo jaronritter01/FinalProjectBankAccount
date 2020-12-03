@@ -851,14 +851,30 @@ void handleHoldersAdmin(vector<AccountHolder>& accountHolders)
                      
                      cout<<"Enter login\n";
                      getline(cin,login);
+               
+                     bool value;
+                     for(int i =0; i < accountHolders.size();i++)
+                     {
+                        if(accountHolders[i].getLogin() == login)
+                        {
+                           value  = false;
+                        }
+                     }
                      
-                     cout<<"Enter password\n";
-                     getline(cin,password);
+                     if(value)
+                     {
+                        cout<<"Enter password\n";
+                        getline(cin,password);
                      
                      
-                     AccountHolder newAccount(firstName,lastName,address,phoneNumber, password, login);
+                        AccountHolder newAccount(firstName,lastName,address,phoneNumber, password, login);
                      
-                     accountHolders.push_back(newAccount);
+                        accountHolders.push_back(newAccount);
+                     }
+                     else
+                     {
+                        cout<<"Username alrea exists choos another"<<endl;
+                     }
             }
             else if(accountChoice == "2")
             {
