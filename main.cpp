@@ -328,7 +328,7 @@ void handleAccountUser(string userName, int locationInV, vector<AccountHolder>& 
       string accountChoice;
       
       
-      while(accountChoice != "4");
+      while(accountChoice != "4")
       {
       
          cout<<"Change Password[1]:" <<endl;
@@ -851,7 +851,7 @@ void handleHoldersAdmin(vector<AccountHolder>& accountHolders)
                      
                      cout<<"Enter login\n";
                      getline(cin,login);
-               
+                     
                      bool value;
                      for(int i =0; i < accountHolders.size();i++)
                      {
@@ -860,36 +860,36 @@ void handleHoldersAdmin(vector<AccountHolder>& accountHolders)
                            value  = false;
                         }
                      }
-                     
                      if(value)
                      {
+                        
                         cout<<"Enter password\n";
                         getline(cin,password);
-                     
-                     
+                        
+                        
                         AccountHolder newAccount(firstName,lastName,address,phoneNumber, password, login);
-                     
+                        
                         accountHolders.push_back(newAccount);
                      }
                      else
                      {
-                        cout<<"Username alrea exists choos another"<<endl;
+                        cout<<"login already exists choose another"<<endl;
                      }
             }
             else if(accountChoice == "2")
             {
                string officalName;
                int location = 0;
-               bool ifPresent = true; 
+               bool ifPresent = false; 
                
-               cout<<"Enter Bank Official Login:\n";
+               cout<<"Enter Account Holder:\n";
                getline(cin,officalName);
                
                for(int i =0; i < accountHolders.size(); i++)
                {
                   if (accountHolders[i].getLogin() == officalName)
                   {
-                     ifPresent = false;
+                     ifPresent = true;
                      location = i;
                   }
                }
@@ -937,7 +937,7 @@ void modifyHolder(vector<AccountHolder>& accountHolders, int location)
       cout<<"Set Status of account[1]"<<endl;
       cout<<"Add Accounts[2]"<<endl;
       cout<<"Modify accounts[3]"<<endl;
-      cout<<"Changee password of holder[4]"<<endl;
+      cout<<"Change password of holder[4]"<<endl;
       cout<<"Exit[5]:\n";
       
       getline(cin,userEnter);
@@ -949,11 +949,12 @@ void modifyHolder(vector<AccountHolder>& accountHolders, int location)
    
          cout<<"Enter ID of Account\n";
          getline(cin, id); 
+         
+         bool ifPresent = false;
    
          if(checkIfNumberI(id))
          {
             int ID = stoi(id);
-            bool ifPresent = false;
       
             for(int i =0; i < accountHolders[location].numberOfAccounts(); i++)
             {
@@ -965,23 +966,34 @@ void modifyHolder(vector<AccountHolder>& accountHolders, int location)
             }
          }
          
-         string choice;
-      
-         cout<<"Set Active[1]"<<endl;
-         cout<<"Deactivate[2]\n";
-         getline(cin,choice);
          
-         if(choice == "1")
+         if(ifPresent)
          {
-            accountHolders[location].getAccountAt(accountLocation).setStatus(true);
-         }
-         else if(choice == "2")
-         {
-            accountHolders[location].getAccountAt(accountLocation).setStatus(false);
+            string choice ="";
+            
+            while(choice != "3")
+            {
+               cout<<"Set Active[1]"<<endl;
+               cout<<"Deactivate[2]\n";
+               getline(cin,choice);
+               
+               if(choice == "1")
+               {
+                  accountHolders[location].getAccountAt(accountLocation).setStatus(true);
+               }
+               else if(choice == "2")
+               {
+                  accountHolders[location].getAccountAt(accountLocation).setStatus(false);
+               }
+               else
+               {
+                  cout<<"Invalid Entry"<<endl;
+               }
+            }
          }
          else
          {
-            cout<<"Invalid Entry"<<endl;
+            cout<<"Account does not exist"<<endl;
          }
       }
       else if(userEnter == "2")
