@@ -17,16 +17,15 @@ string decrypt(string input);
 int main()
 {
 
-    tm *newTime;
+    Admin admin;
+    string newPass;
 
-    int ten;
-
-
-    newTime->tm_mday = ten;
-
-    cout << newTime->tm_mday;
+    cout << "Please enter a new Password: ";
+    getline(cin, newPass);
+    admin.setPassword(newPass);
+    cout << "Password change successful\n";
+    cout << admin.getPassword() << endl;
 }
-
 string encrypt(string input)
 {
     for(int i = 0; i < input.length(); i++)

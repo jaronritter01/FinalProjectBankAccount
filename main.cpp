@@ -184,7 +184,7 @@ int main() {
             cout << "Invalid Data\n";
         }
 
-        
+        inputFile.close();
     }
     
 
@@ -238,7 +238,7 @@ int main() {
                   cout << "Please enter a new Password: ";
                   string newPassword;
                   getline(cin, newPassword);
-                  admin.password = newPassword;
+                  admin.setPassword(newPassword);
                   cout << "Password change successful\n";
                }
                else if(adminChoice == "4")
@@ -327,13 +327,17 @@ int main() {
   fstream outFile;
   outFile.open("outputFile.txt");
 
+  
   string adminDetails = admin.getFirstName() + " " + admin.getLastName() + " " + encrypt(admin.getLogin()) + " " + encrypt(admin.getPassword()) + " " + to_string(admin.getID());
-
+  
   outFile << "ADMIN\n";
+  
   outFile << adminDetails << "\n";
 
+  
   string bankOfficialDetails = "", accountHolderDetails = "";
 
+  
   for(int i = 0; i < bankOfficials.size(); i++)
   {
      outFile << "BANKOFFICIAL\n";
@@ -369,7 +373,7 @@ int main() {
   }
   
   
-  
+  outFile.close();
   return 0;
 }
 
