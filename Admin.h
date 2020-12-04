@@ -12,7 +12,7 @@ using namespace std;
 class Admin
 {
     private:
-        string firstName, lastName, login, password;
+        string firstName, lastName, login;
         int id;
     public:
         Admin(string, string, string, string, int);
@@ -36,6 +36,7 @@ class Admin
         void modify(AccountHolder &, int, double);
         void modify(AccountHolder &, int, double, double);
         string getPassword() const;
+        string password;
 };
 
 Admin::Admin(string FirstName="", string LastName="", string Login="", string Password="", int ID=0)

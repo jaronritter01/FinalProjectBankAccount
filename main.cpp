@@ -235,10 +235,10 @@ int main() {
                else if(adminChoice == "3")
                {  
 
-                  cout << "Hello\n";
+                  cout << "Please enter a new Password: ";
                   string newPassword;
                   getline(cin, newPassword);
-                  //admin.setPassword(newPassword);
+                  admin.password = newPassword;
                   cout << "Password change successful\n";
                }
                else if(adminChoice == "4")
