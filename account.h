@@ -39,6 +39,7 @@ class AccountP
         string getDateClosed() const;
         string getDateLastOpen() const;
         string getMaturity() const; 
+        string getTimeNow() const;
         void withdraw(double,string);
         void deposit(double,string);
         void setCreationTime();
@@ -67,6 +68,19 @@ AccountP::AccountP(int newAccountNumber, double newBalance)
     accountNumber = newAccountNumber;
     balance = newBalance;  
     status = true;
+}
+
+string AccountP::getTimeNow() const
+{
+   //Getter for the current time
+    struct tm* currentTime;
+    time_t currTime;
+
+    time(&currTime);
+
+    currentTime = localtime(&currTime);
+
+    return to_string(currentTime->tm_mon + 1) + "/" +to_string(currentTime->tm_mday) + "/" + to_string(currentTime->tm_year + 1900);
 }
 
 Transaction &AccountP::getTransactionAt(int index)
@@ -103,13 +117,19 @@ void AccountP:: setCreationTime()
 
 void AccountP:: setCreationTimeFile(string date)
 {
+
+   time_t timeFromFile;
    
    int mon = stoi(date.substr(0, date.find("/")));
    date = date.substr(date.find("/") +1 , date.length());
    int day = stoi(date.substr(0, date.find("/")));
    date = date.substr(date.find("/") +1 , date.length());
-   int year = stoi(date.substr(0, date.length()));
-   
+   int year = stoi(date);
+
+   time(&timeFromFile);
+
+   timeCreated = localtime(&timeFromFile);
+
    timeCreated->tm_mday = day;
    timeCreated->tm_mon = mon - 1;
    timeCreated->tm_year = year - 1900;
@@ -131,10 +151,13 @@ void AccountP:: setLastOpen(string date)
    int day = stoi(date.substr(0, date.find("/")));
    date = date.substr(date.find("/") +1 , date.length());
    int year = stoi(date.substr(0, date.length()));
+
+   lastOpen = new tm;
    
    lastOpen->tm_mday = day;
    lastOpen->tm_mon = mon - 1;
    lastOpen->tm_year = year - 1900;
+
 }
 
 void AccountP:: setInterest(double Interest)
@@ -329,6 +352,11 @@ void AccountP:: setCloseAccountFile(string date)
    int day = stoi(date.substr(0, date.find("/")));
    date = date.substr(date.find("/") +1 , date.length());
    int year = stoi(date.substr(0, date.length()));
+
+   time_t closingTime;
+   time(&closingTime);
+
+   timeClosed = localtime(&closingTime);
    
    timeClosed->tm_mday = day;
    timeClosed->tm_mon = mon - 1;
@@ -389,13 +417,19 @@ void AccountP:: setMaturity()
 {
    int day,month,year;
    
-    day = timeCreated->tm_mday;
-    month = timeCreated->tm_mon;
-    year = timeCreated->tm_year;
+   day = timeCreated->tm_mday;
+   month = timeCreated->tm_mon;
+   year = timeCreated->tm_year;
+
+   time_t maturityTime;
+
+   time(&maturityTime);
+
+   maturity = localtime(&maturityTime);
     
-    maturity->tm_mday = day;
-    maturity->tm_mon = month;
-    maturity->tm_year = year + term;
+   maturity->tm_mday = day;
+   maturity->tm_mon = month;
+   maturity->tm_year = year + term;
     
 }
 

@@ -89,33 +89,7 @@ int AccountHolder::numberOfAccounts() const
 {
     return accounts.size();
 }
-/*
-AccountP AccountHolder::findAccount(int accountNumber)
-{
 
-    bool found = false;
-
-    int location = 0;
-
-    for(int i = 0; i < accounts.size(); i++)
-    {
-        if(accounts[i].getAccountNumber() == accountNumber)
-        {
-            location = i;
-            found = true;
-        }
-    }
-
-    if(found)
-    {
-        return accounts[location];
-    }
-    else
-    {
-        cout << "Account with account number: " << accountNumber << " does not exist\n";
-    }
-}
-*/
 void AccountHolder::withdraw(int accountNumber, double amount, string BankOfficialName)
 {
     bool found = false;
@@ -277,6 +251,8 @@ void AccountHolder::createCheckingAccount(int accountNumber)
     {
         AccountP newAccount(accountNumber, 0.0);
         newAccount.setType("C");
+        newAccount.setCreationTime();
+        newAccount.setTimeNow();
         accounts.push_back(newAccount);
     }
     else
@@ -301,6 +277,8 @@ void AccountHolder::createSavingsAccount(int accountNumber, double interestRate)
         AccountP newAccount(accountNumber, 0.0);
         newAccount.setInterest(interestRate);
         newAccount.setType("S");
+        newAccount.setCreationTime();
+        newAccount.setTimeNow();
         accounts.push_back(newAccount);
     }
     else
@@ -330,6 +308,9 @@ void AccountHolder::createCDAccount(int accountNumber, double interestRate, doub
         newAccount.setInterest(interestRate);
         newAccount.setTerm(term);
         newAccount.setType("CD");
+        newAccount.setCreationTime();
+        newAccount.setTimeNow();
+        newAccount.setMaturity();
         accounts.push_back(newAccount);
     }
     else

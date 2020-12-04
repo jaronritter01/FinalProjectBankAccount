@@ -26,7 +26,7 @@ string decrypt(string input);
 
 int main() {
 
-   /*
+   
    fstream inputFile;
     inputFile.open("input.txt"); 
     string line = "";
@@ -132,6 +132,7 @@ int main() {
                 newAccount.setCreationTimeFile(line);
 
                 getline(inputFile, line);
+
                 string lastOpenedTime = line;
                 newAccount.setLastOpen(line);
 
@@ -142,8 +143,6 @@ int main() {
                 getline(inputFile, line); // reads number of transactions for this account;
                 
                 int numOfTransactions = stoi(line);
-
-                cout << numOfTransactions << endl;
 
                 for(int j = 0; j < numOfTransactions; j++)
                 {
@@ -187,13 +186,8 @@ int main() {
 
         
     }
-    */
+    
 
-   
-  Admin admin("cole","kassing","ck115","butt",12345);
-  vector<BankOfficial> bankOfficials;
-  vector<AccountHolder> accountHolders;
-  
   cout<<"Hello Welcome to Bear Bank"<<endl; 
   
   string userInput = "0";
@@ -322,7 +316,7 @@ int main() {
 
   //start of output handling
 
-  /*
+  
   fstream outFile;
   outFile.open("outputFile.txt");
 
@@ -340,8 +334,6 @@ int main() {
                            + " " + to_string(bankOfficials[i].getID());
      outFile << bankOfficialDetails << '\n';
   }
-
-  cout << accountHolders.size() << endl;
   
   for(int i = 0; i < accountHolders.size(); i++)
   {
@@ -357,7 +349,7 @@ int main() {
          AccountP currAcc = accountHolders[i].getAccountAt(j);
          outFile << currAcc.getAccountNumber() << " " << currAcc.getBalance() << " " << currAcc.getInterest() << " " << currAcc.getTerm() << '\n';
          outFile << currAcc.getDateCreated() << '\n';
-         outFile << currAcc.getDateLastOpen() << '\n';
+         outFile << currAcc.getTimeNow() << '\n';
          outFile << currAcc.numberOfTransactions() << '\n';
 
          for(int k = 0; k < 4; k++)
@@ -368,7 +360,7 @@ int main() {
          
       }
   }
-  */
+  
   
   
   return 0;

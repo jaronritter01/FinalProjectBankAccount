@@ -1,5 +1,8 @@
 /main.exe
 /a.exe
-/tesing.cpp
+/testing.cpp
 /testing.exe
 /outputFile.txt
+/.vscode/launch.json
+/.vscode/settings.json
+/.vscode/tasks.json
