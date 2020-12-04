@@ -1,5 +1,5 @@
 #include <iostream>
-#include "account.h"
+#include "AccountP.h"
 #include "AccountHolder.h"
 #include "BankOfficial.h"
 #include "Admin.h"
@@ -27,7 +27,7 @@ string decrypt(string input);
 int main() {
 
    
-   fstream inputFile;
+    fstream inputFile;
     inputFile.open("input.txt"); 
     string line = "";
     vector <BankOfficial> bankOfficials;
@@ -77,8 +77,13 @@ int main() {
             line = line.substr(line.find(" ")+1, line.length());
 
             int id = stoi(line); // ID
+            
+            string status;
+            
+            getline(inputFile, status);
 
             BankOfficial newBankOfficial(firstName, lastName, id, login, password);
+            newBankOfficial.setStatus(status);
             bankOfficials.push_back(newBankOfficial);
         }
         else if(line == "ACCOUNTHOLDER")
@@ -101,6 +106,9 @@ int main() {
             line = line.substr(line.find(" ")+1, line.length()); 
 
             string address = line; // address (might contain spaces)
+            
+            string status;
+            
 
             AccountHolder newAccountHolder(firstName, lastName, address, phoneNumber, password, login);
 
@@ -125,9 +133,20 @@ int main() {
                 AccountP newAccount(accountNumber, balance); // initalizes newAccount
                 newAccount.setInterest(interestRate); //sets interest
                 newAccount.setTerm(termLength); //sets term
+                
+                string status;
+                getline(inputFile,status);
+                
+                if(status == "true")
+                {
+                  newAccount.setStatus(true);
+                }
+                else
+                {
+                  newAccount.setStatus(false);
+                }
 
                 getline(inputFile, line);
-
                 string creationTime = line;
                 newAccount.setCreationTimeFile(line);
 
@@ -137,9 +156,9 @@ int main() {
                 newAccount.setLastOpen(line);
 
                 newAccount.setMaturity();
+                newAccount.setTimeNow();
 
                 newAccount.calculateInt();
-
                 getline(inputFile, line); // reads number of transactions for this account;
                 
                 int numOfTransactions = stoi(line);
@@ -171,7 +190,6 @@ int main() {
                     transaction.official = line; //sets the name of the official that made the trasaction
 
                     newAccount.addTransation(transaction); // adds this tranaction to the transaction list
-
                 }
 
                 newAccountHolder.addAccount(newAccount); //adds the account to the list of accounts for an account holder
@@ -184,14 +202,18 @@ int main() {
             cout << "Invalid Data\n";
         }
 
-        inputFile.close();
     }
+    inputFile.close();
     
 
   cout<<"Hello, Welcome to Bear Bank"<<endl; 
   
   string userInput = "0";
   
+  /*
+      Following while loop is the main menu give the choices for which 
+      account you want to log in.
+  */
   while(userInput != "4")
   {
       cout<<"Login as Admin[1]:"<<endl;
@@ -200,8 +222,10 @@ int main() {
       cout<<"Exit[4]:\n";
       getline(cin, userInput);
       
+      //if users chooses to login as admin
       if(userInput == "1")
       {
+         //gets password and if it works gives menu for admin else prints invalid password or username
          string adminPassword, adminsLogin;
          
          cout<<"Enter Admins Login: ";
@@ -216,25 +240,27 @@ int main() {
             
             while(adminChoice != "4")
             {
+               //choices for the admin
                cout<<"Official Users[1]:" <<endl;
                cout<<"Acount Holders[2]:" <<endl;
                cout<<"Change admin Password[3]:"<<endl;
-               cout<<"Change admin login[4]:"<<endl;
                cout<<"Exit[4]:\n";
 
                getline(cin, adminChoice);
                
                if(adminChoice == "1")
                {
+                  //funciton handles the official user functions for admin
                   handleOfficialAdmin(bankOfficials);
                }
                else if(adminChoice == "2")
                {
+                  //function handles the holder functions for admin
                   handleHoldersAdmin(accountHolders);
                }
                else if(adminChoice == "3")
                {  
-
+                  //changes password 
                   cout << "Please enter a new Password: ";
                   string newPassword;
                   getline(cin, newPassword);
@@ -243,10 +269,12 @@ int main() {
                }
                else if(adminChoice == "4")
                {
+                  //exist the menu
                   cout<<"Closing"<<endl;
                }
                else
                {
+                  //if no valid choice is chosen
                   cout<<"Invalid Entry"<<endl;
                }
             }
@@ -257,8 +285,11 @@ int main() {
          }
          
       }
+      //handles the choice for loging in to official
       else if(userInput == "2")
       {
+         //requests the official name and checks to see if it exsists
+         
          string officalName;
          int location = 0;
          bool ifPresent = false; 
@@ -277,15 +308,19 @@ int main() {
          
          if(ifPresent && bankOfficials[location].getStatus() == true)
          {
+            //function for official users functions 
             handleOfficialUser(officalName, location, bankOfficials,accountHolders);
          }
          else
          {
+            //returns print if account doesnt exists
             cout<<"Account does not exsist or is closed " <<endl; 
          }
       }
+      //handles if user chooses access account holder
       else if(userInput == "3")
       {
+         //user enters a account login and sees if it exist 
          string accountName;
          int location = 0;
          bool ifPresent = false; 
@@ -304,6 +339,7 @@ int main() {
          
          if(ifPresent)
          {
+            //function for handling account user 
             handleAccountUser(accountName, location, accountHolders);
          }
          else
@@ -313,6 +349,7 @@ int main() {
       }   
       else if(userInput == "4")
       {
+         //exists the menu
          cout<<"Goodbye"<<endl;
       }  
       else
@@ -344,6 +381,14 @@ int main() {
      bankOfficialDetails = bankOfficials[i].getFirstName() + " " + bankOfficials[i].getLastName() + " " + encrypt(bankOfficials[i].getLogin()) + " " + encrypt(bankOfficials[i].getPassword()) 
                            + " " + to_string(bankOfficials[i].getID());
      outFile << bankOfficialDetails << '\n';
+     if(bankOfficials[i].getStatus() == true)
+     {
+         outFile<<"enable"<<endl;
+     }
+     else
+     {
+         outFile<<"disable"<<endl;
+     }
   }
   
   for(int i = 0; i < accountHolders.size(); i++)
@@ -359,6 +404,14 @@ int main() {
       {
          AccountP currAcc = accountHolders[i].getAccountAt(j);
          outFile << currAcc.getAccountNumber() << " " << currAcc.getBalance() << " " << currAcc.getInterest() << " " << currAcc.getTerm() << '\n';
+         if(currAcc.getStatus() == true)
+         {
+            outFile<<"true"<< "\n";
+         }
+         else
+         {
+            outFile<<"false"<< "\n";
+         }
          outFile << currAcc.getDateCreated() << '\n';
          outFile << currAcc.getTimeNow() << '\n';
          outFile << currAcc.numberOfTransactions() << '\n';
@@ -380,6 +433,8 @@ int main() {
 
 void handleAccountUser(string userName, int locationInV, vector<AccountHolder>& accountHolders)
 {
+   //function for handling account 
+   //asks for the account password and sees if it matches 
    string userEnter;
    cout<<"Enter password for account: \n";
    int i = locationInV;
@@ -395,7 +450,7 @@ void handleAccountUser(string userName, int locationInV, vector<AccountHolder>& 
       
       while(accountChoice != "4")
       {
-      
+         //choices for the account holders 
          cout<<"Change Password[1]:" <<endl;
          cout<<"View Your Current Accounts[2]:" << endl;
          cout<<"View Account[3]:" << endl;
@@ -405,6 +460,7 @@ void handleAccountUser(string userName, int locationInV, vector<AccountHolder>& 
       
          if(accountChoice == "1")
          {
+            //changes password for account
             string newPassword; 
             
             cout<<"Enter New Password:\n";
@@ -416,10 +472,12 @@ void handleAccountUser(string userName, int locationInV, vector<AccountHolder>& 
          }
          else if(accountChoice == "2")
          {
+            //prints all different account id and there type
             accountHolders[i].printAccounts();
          }
          else if(accountChoice == "3")
          {
+            
             string accountIdS;
             
             cout<<"Enter Account id"<<endl;
@@ -437,23 +495,27 @@ void handleAccountUser(string userName, int locationInV, vector<AccountHolder>& 
          }
          else if(accountChoice == "4")
          {
+            //exits the menu
             cout<<"Goodbye"<<endl;
          }
          else
          {
+            //print if the user enter does not work
             cout<<"invalid entry, try again" << endl;
          }
-      }
-      
+      } 
    }
    else
    {
+      //print if password does not match
       cout<<"password is inccorrect" << endl; 
    }
 }
 
 void handleOfficialUser(string userName, int locationInV, vector<BankOfficial>& bankOfficials,vector<AccountHolder>& accountHolders)
 {
+   //handles official users 
+   //requests password for account and sees if its valid 
    string userEnter;
    cout<<"Enter password for account\n";
    int i = locationInV;
@@ -469,7 +531,7 @@ void handleOfficialUser(string userName, int locationInV, vector<BankOfficial>& 
       
       while(accountChoice != "3")
       {
-      
+         //menu options for the official 
          cout<<"Search for Users[1]:" <<endl;
          cout<<"Access Users[2]:" << endl;
          cout<<"Exit[3]:\n";
@@ -478,10 +540,13 @@ void handleOfficialUser(string userName, int locationInV, vector<BankOfficial>& 
          
          if(accountChoice == "1")
          {
+            //function that handles serch for account users
             searchForAccountHolder(accountHolders, bankOfficials, locationInV);
          }
          else if(accountChoice == "2")
          {
+            //access account holders 
+            //requests the account name and to see if it exists
             string accountName;
             int location = 0;
             bool ifPresent = false; 
@@ -500,19 +565,23 @@ void handleOfficialUser(string userName, int locationInV, vector<BankOfficial>& 
             
             if(ifPresent)
             {
+               //if account exists moves into this function
                handleAccountOfficial(accountHolders,location,bankOfficials, locationInV);
             }
             else
             {
+               //prints if account doesnt exist
                cout<<"account doesnt Exist"<<endl;
             }
          }
          else if(accountChoice == "3")
          {
+            //exists the menu
             cout<<"Closing"<<endl;
          }
          else
          {
+            //if no valid choices are chosen
             cout<<"Invalid Entry, try again"<<endl;
          }
       }
@@ -520,17 +589,20 @@ void handleOfficialUser(string userName, int locationInV, vector<BankOfficial>& 
    }
    else
    {
+      //if password is incorrcect 
       cout<<"password is inccorrect" << endl; 
    }
 }
 
 void searchForAccountHolder(vector<AccountHolder>& accountHolders,vector<BankOfficial>& bankOfficials,int location)
 {
+   //function for searching for account holders 
    string userEnter;
    string userSearch;
    
    while(userEnter != "3")
    {
+      //menu for searching accounts 
       cout<<"Search by account number2[1]:"<<endl;
       cout<<"Search by phoneNumber or last name[2]:"<< endl;
       cout<<"Exit[3]:\n";
@@ -540,6 +612,7 @@ void searchForAccountHolder(vector<AccountHolder>& accountHolders,vector<BankOff
       
       if(userEnter == "1")
       {
+         //if user chooses to search by id it checks to see if valid and returns the account information
          cout<<"Enter account Number:\n";
          
          getline(cin,userSearch);
@@ -557,6 +630,7 @@ void searchForAccountHolder(vector<AccountHolder>& accountHolders,vector<BankOff
       }
       else if(userEnter == "2")
       {
+         //searches by last name or the phone number
          cout<<"Enter account last name or number\n:";
          
          getline(cin,userSearch);
@@ -565,10 +639,12 @@ void searchForAccountHolder(vector<AccountHolder>& accountHolders,vector<BankOff
       }
       else if(userEnter == "3")
       {
+         //exits menu
          cout<<"closing"<<endl;
       }
       else
       {
+         //if value is invalid
          cout<<"invalid Entry"<<endl;
       }
    }
@@ -577,7 +653,8 @@ void searchForAccountHolder(vector<AccountHolder>& accountHolders,vector<BankOff
 
 void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationAH, vector<BankOfficial>& bankOfficials, int locationBO)
 {
-   
+   //handles account official function for dealing with account holders 
+   //checks to see if password matches user
    string userEnter;
    cout<<"Enter password for account";
    
@@ -591,7 +668,8 @@ void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationA
     
       while(accountChoice != "5")
       {
-         cout<<"Open New Account[1]:"<<endl;
+         //menu choices 
+         cout<<"Open Account[1]:"<<endl;
          cout<<"Close Account[2]:" <<endl; 
          cout<<"deposit[3]:" << endl;
          cout<<"withdraw[4]:" << endl;
@@ -601,6 +679,7 @@ void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationA
          
          if(accountChoice == "1")
          {
+            //searches for account inside holder and sets status as open
             string accountID;
             cout<<"Enter account number:\n";
             getline(cin, accountID);
@@ -618,6 +697,7 @@ void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationA
          }
          else if(accountChoice == "2")
          {
+            //user enter account id and if it exsists sets status as inactive 
             string accountID;
             cout<<"Enter account number:\n";
             getline(cin, accountID);
@@ -636,6 +716,7 @@ void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationA
          }
          else if(accountChoice == "3")
          {
+            //user enters a account number and sees if it exsists 
             string ammount;
             string accountID;
             cout<<"Enter account number:\n";
@@ -644,29 +725,33 @@ void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationA
             if(checkIfNumberI(accountID))
             {
                int id = stoi(accountID);
-            
+               
+               //requests the amount to deposit from user and cheks to see if it is valid
                cout<<"Enter ammount:\n";
                getline(cin, ammount);
                
                if(checkIfNumberD(ammount))
                {
-                  int ammountD = stod(ammount);
+                  double ammountD = stod(ammount);
                   
                   bankOfficials[locationBO].deposit(accountHolders[locationAH], id, ammountD);
                   
                }
                else
                {
+                  // if amount is not valid 
                   cout<<"invalid ammount" << endl; 
                }    
             }
             else
             {
+               //if account is invalid
                cout<<"invalid account id"<<endl;
             }
          }
          else if(accountChoice == "4")
          {
+            //function is user wants to withdraw
             string ammount;
             string accountID;
             cout<<"Enter account number:\n";
@@ -674,6 +759,7 @@ void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationA
             
             if(checkIfNumberI(accountID))
             {
+               //checks to see if account id is valid
                int id = stoi(accountID);
             
                cout<<"Enter ammount:\n";
@@ -681,46 +767,54 @@ void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationA
                
                if(checkIfNumberD(ammount))
                {
-                  int ammountD = stod(ammount);
+                  //checks to see if the user entered amount is valid
+                  double ammountD = stod(ammount);
                   
                   bankOfficials[locationBO].withdraw(accountHolders[locationAH], id, ammountD);
                   
                }
                else
                {
+                  //if amount is invalid
                   cout<<"invalid ammount" << endl; 
                }    
             }
             else
             {
+               //if account is invalid
                cout<<"invalid account id"<<endl;
             }
 
          }
          else if(accountChoice == "5")
          {
+            //exits menu
             cout<<"closing"<<endl;
          }
          else
          {
+            //if entry is invalid
             cout<<"invalid entry"<<endl;
          }
       }
    }
    else
    {
+      //if passord was incorrect
       cout<<"Password is Incorrect"<<endl;
    }
 }
 
 void handleOfficialAdmin(vector<BankOfficial>& bankOfficials)
 {
+         //function for handling officials functions for admin 
          string accountChoice;
          cout<<"Success"<<endl;
          cout<<"\n";
     
          while(accountChoice != "3")
          {
+            //menu choices 
             cout<<"Create Official[1]:"<<endl;
             cout<<"Modify Official[2]:" <<endl; 
             cout<<"Exit[3]:\n";
@@ -729,9 +823,11 @@ void handleOfficialAdmin(vector<BankOfficial>& bankOfficials)
             
             if(accountChoice == "1")
             {
+               //function to create a new official
                string firstName, lastName, login, password,ids;
                int id;
                
+               //enters id and sees if it exsist 
                cout<<"Enter new user id"<<endl;
                getline(cin,ids);
                
@@ -749,7 +845,7 @@ void handleOfficialAdmin(vector<BankOfficial>& bankOfficials)
                      }
                   }
                   
-                  if(value)
+                  if(value && id >0)
                   {
                      cout<<"Enter first Name\n";
                      getline(cin,firstName);
@@ -760,6 +856,7 @@ void handleOfficialAdmin(vector<BankOfficial>& bankOfficials)
                      cout<<"Enter login\n";
                      getline(cin,login);
                      
+                     //checks to see if login exist or not 
                      for(int i =0; i < bankOfficials.size();i++)
                      {
                         if(bankOfficials[i].getLogin() == login)
@@ -770,6 +867,7 @@ void handleOfficialAdmin(vector<BankOfficial>& bankOfficials)
                      
                      if(value)
                      {
+                        // if login doesnt exist
                         cout<<"Enter password\n";
                         getline(cin,password);
                      
@@ -781,21 +879,26 @@ void handleOfficialAdmin(vector<BankOfficial>& bankOfficials)
                      }
                      else
                      {
+                        //if login already exist
                         cout<<"login already exists choose another"<<endl;
                      }
                   }
                   else
                   {
-                     cout<<"number doesnt exsist"<<endl;
+                     //if id exist alread
+                     cout<<"id already exist"<<endl;
                   }
                }
                else
                {
+                  // if id number is correct
                   cout<<"invalid Number"<<endl;
                }
             }
             else if(accountChoice == "2")
             {
+               //function for handling if admin wants to modify official 
+               //checks to see if offical exsist or not
                string officalName;
                int location = 0;
                bool ifPresent = false; 
@@ -814,19 +917,23 @@ void handleOfficialAdmin(vector<BankOfficial>& bankOfficials)
                
                if(ifPresent)
                {
+                  //if it exist than this function modify offical is called 
                   modifyOfficial(bankOfficials, location);
                }
                else
                {
+                  //if account does not exist 
                   cout<<"Account does not exsist or is closed " <<endl; 
                }
             }
             else if(accountChoice == "3")
             {
+               //exits menu
                cout<<"closing" <<endl;
             }
             else
             {
+               //if user enter invalid entry 
                cout<<"invalid Entry" <<endl; 
             }
          }   
@@ -838,6 +945,7 @@ void modifyOfficial(vector<BankOfficial>& bankOfficials, int location)
    
    while(userEnter != "3")
    {
+      //menue for modifying official through admin 
       cout<<"activate/deactivate[1]:"<<endl;
       cout<<"change password[2]:"<<endl;
       cout<<"Exit[3]:\n";
@@ -846,6 +954,7 @@ void modifyOfficial(vector<BankOfficial>& bankOfficials, int location)
       
       if(userEnter == "1")
       {
+         //will prompt menue for setting the official as active or inactive
          string choice;
       
          cout<<"Set Active[1]"<<endl;
@@ -854,10 +963,12 @@ void modifyOfficial(vector<BankOfficial>& bankOfficials, int location)
          
          if(choice == "1")
          {
+            //sets official active 
             bankOfficials[location].setStatus("enable");
          }
          else if(choice == "2")
          {
+            //set official as inactive
             bankOfficials[location].setStatus("disable");
          }
          else
@@ -867,6 +978,7 @@ void modifyOfficial(vector<BankOfficial>& bankOfficials, int location)
       }
       else if(userEnter == "2")
       {
+         //changes password for official
          string password; 
          
          cout<<"Enter new password\n";
@@ -876,10 +988,12 @@ void modifyOfficial(vector<BankOfficial>& bankOfficials, int location)
       }
       else if(userEnter == "3")
       {
+         //exits the menu
          cout<<"closing" <<endl;
       }
       else
       {
+         //if user enters wrong entry
          cout<<"Invalid Entry"<<endl;
       }
    }  
@@ -887,11 +1001,12 @@ void modifyOfficial(vector<BankOfficial>& bankOfficials, int location)
 
 void handleHoldersAdmin(vector<AccountHolder>& accountHolders)
 {   
-     
+    //function for handling holders through admins 
          string accountChoice;
     
          while(accountChoice != "3")
          {
+            //menu for account holder functions for admin
             cout<<"Create AccountHolder[1]:"<<endl;
             cout<<"Modify holder/create account[2]:" <<endl; 
             cout<<"Exit[3]:\n";
@@ -900,6 +1015,7 @@ void handleHoldersAdmin(vector<AccountHolder>& accountHolders)
             
             if(accountChoice == "1")
             {
+               //creates a new Acount Holder 
                string firstName,lastName,login,password,address, phoneNumber;
             
                      cout<<"Enter first Name\n";
@@ -917,17 +1033,18 @@ void handleHoldersAdmin(vector<AccountHolder>& accountHolders)
                      cout<<"Enter login\n";
                      getline(cin,login);
                      
-                     bool value = false;
+                     //checks to see if the login exists or not
+                     bool value = true;
                      for(int i =0; i < accountHolders.size();i++)
                      {
                         if(accountHolders[i].getLogin() == login)
                         {
-                           value = true;
+                           value = false;
                         }
                      }
-                     if(!value)
+                     if(value)
                      {
-                        
+                        // creates new account holder and adds it to vector 
                         cout<<"Enter password\n";
                         getline(cin,password);
                         
@@ -938,11 +1055,14 @@ void handleHoldersAdmin(vector<AccountHolder>& accountHolders)
                      }
                      else
                      {
+                        //if loging exists 
                         cout<<"login already exists choose another"<<endl;
                      }
             }
             else if(accountChoice == "2")
             {
+               //function for handling user creating new account in holder or modiying holder 
+               //user enters account holder login and checks to see if exists 
                string officalName;
                int location = 0;
                bool ifPresent = false; 
@@ -961,19 +1081,23 @@ void handleHoldersAdmin(vector<AccountHolder>& accountHolders)
                
                if(ifPresent)
                {
+                  //function for handling the account holder through admin
                   modifyHolder(accountHolders, location);
                }
                else
                {
+                  //if account does not exists 
                   cout<<"Account does not exsist or is closed " <<endl; 
                }
             }
             else if(accountChoice == "3")
             {
+               //exits menu
                cout<<"closing" <<endl;
             }
             else
             {
+               //if user entry is invalid 
                cout<<"invalid Entry" <<endl; 
             }
          }
@@ -996,7 +1120,10 @@ bool checkIfNumberI(string number)
 
 void modifyHolder(vector<AccountHolder>& accountHolders, int location)
 {
-   string userEnter; 
+   //function for changing account holder parameters and adding new accounts 
+   string userEnter;
+   
+   
    while(userEnter != "5")
    {
       cout<<"Set Status of account[1]"<<endl;
@@ -1009,6 +1136,8 @@ void modifyHolder(vector<AccountHolder>& accountHolders, int location)
       
       if(userEnter == "1")
       {
+         //user enter a id to see if account exists 
+         //checks to see if the account exists 
          string id; 
          int accountLocation;
    
@@ -1034,43 +1163,57 @@ void modifyHolder(vector<AccountHolder>& accountHolders, int location)
          
          if(ifPresent)
          {
+            //promts menu to set the status of the accounts
             string choice ="";
             
             while(choice != "3")
             {
                cout<<"Set Active[1]"<<endl;
-               cout<<"Deactivate[2]\n";
+               cout<<"Deactivate[2]"<<endl;
+               cout<<"Exit[3]\n";
                getline(cin,choice);
                
                if(choice == "1")
                {
+                  //sets account as active
                   accountHolders[location].getAccountAt(accountLocation).setStatus(true);
                }
                else if(choice == "2")
                {
+                  //sets account as inactive 
                   accountHolders[location].getAccountAt(accountLocation).setStatus(false);
+               }
+               else if(choice == "3")
+               {
+                  //exits the menu
+                  cout<<"closing"<<endl;
                }
                else
                {
+                  //invalid entry for menu
                   cout<<"Invalid Entry"<<endl;
                }
             }
          }
          else
          {
+            //account doesnt exist
             cout<<"Account does not exist"<<endl;
          }
       }
       else if(userEnter == "2")
       {
+         //function for creating accounts
          createAccounts(accountHolders, location);
       }
       else if(userEnter == "3")
       {
+         //functions for modifying accounts 
          modifyAccounts(accountHolders, location);
       }
       else if(userEnter == "4")
       {
+         //changes password for the account Holder
          string password; 
          
          cout<<"Enter new password\n";
@@ -1080,10 +1223,12 @@ void modifyHolder(vector<AccountHolder>& accountHolders, int location)
       }
       else if(userEnter == "5")
       {
+         //exit 
          cout<<"Closing"<<endl;
       }
       else
       {
+         //invalid entry for menu
          cout<<"Ivalid Entry"<<endl;
       }
    }
@@ -1091,10 +1236,12 @@ void modifyHolder(vector<AccountHolder>& accountHolders, int location)
 
 void createAccounts(vector<AccountHolder>& accountHolders, int location)
 {
+   //function for creating new accounts 
    string userEnter,id; 
    
    while(userEnter != "4")
    {
+      //menus for diferent types of accounts 
       cout<<"Create checking account[1]"<<endl;
       cout<<"Create savings account[2]"<<endl;
       cout<<"create CD account[3]"<<endl;
@@ -1103,36 +1250,41 @@ void createAccounts(vector<AccountHolder>& accountHolders, int location)
       
       if(userEnter == "1")
       {
-         
+         //if user wants to crerate new checking account 
          cout<<"Enter new id number\n";
          getline(cin, id);
          
          if(checkIfNumberI(id))
          {
+            //checks to see if user entered id is valid or not 
             int ID = stoi(id);
             if(ID > 0)
             {
+               //creates new account
                accountHolders[location].createCheckingAccount(ID);
             }
             else
             {
+               //if value is not positive
                cout<<"Value must be positive" <<endl;
             }
          }
          else
          {
+            //if value is not a integer 
             cout<<"Invalid Entry"<<endl;
          } 
       }
       else if(userEnter == "2")
       {
+         //if user wants to create new savings account 
          cout<<"Enter new id Number\n";
          getline(cin,id); 
          
          if(checkIfNumberI(id))
          {
             int ID = stoi(id);
-            
+            //checks to see if id is valid
             if(ID > 0)
             {
                cout<<"Enter Interest\n";
@@ -1140,46 +1292,56 @@ void createAccounts(vector<AccountHolder>& accountHolders, int location)
             
                if(checkIfNumberD(id))
                {
+                  //checks to see if entered intrest is valid 
                   double Int = stod(id);
                   if(Int > 0.0)
                   {
+                     //creates a new account 
                      accountHolders[location].createSavingsAccount(ID,Int);
                   }
                   else
                   {
+                     //if interest is not positve
                      cout<<"Enter positive value"<<endl;
                   }
                }
                else
                {
+                  //if interest is not a double 
                   cout<<"invalid Entry"<<endl;
                }
             }
             else
             {
+               //if id is not positive
                cout<<"Value must be positive" <<endl;
             }
          }
          else
          {
+            //if id is not integer 
             cout<<"Invlid Entry"<<endl;
          }
       }
       else if(userEnter == "3")
       {
+         // if user wants to create new cd account 
          cout<<"Enter new id Number\n";
          getline(cin,id); 
          
          if(checkIfNumberI(id))
          {
+            //checks to see if id is valid 
             int ID = stoi(id);
             if(ID > 0)
             {
+               //checks to see if interest is valid
                cout<<"Enter Interest\n";
                getline(cin, id);
             
                if(checkIfNumberD(id))
                {
+                  //checks to see if term is valid
                   double Int = stod(id);
                   if(Int > 0.0)
                   {
@@ -1194,44 +1356,53 @@ void createAccounts(vector<AccountHolder>& accountHolders, int location)
                         
                         if(terms >0)
                         {
+                           //creates new cd account 
                            accountHolders[location].createCDAccount(ID,Int,terms);
                         }
                         else
                         {
+                           //if term is not positive
                            cout<<"Value must be Positive"<<endl;
                         }
                      }
                      else
                      {
+                        //if term is not int 
                         cout<<"Invalid Entry"<<endl;
                      }
                   }
                   else
                   {
+                     //interest must be postive 
                      cout<<"Value must be positive"<<endl;
                   }
                }
                else
                {
+                  //interest is not double
                   cout<<"Invalid Entry"<<endl;
                }
             }
             else 
             {
+               //id is not positive 
                cout<<"Value must be  positive"<<endl;
             }
          }        
          else
          {
+            //id is not integer
             cout<<"Invlid Entry"<<endl;
          }
       }
       else if(userEnter == "4")
       {
+         //exit
          cout<<"Closing"<<endl;
       }
       else
       {
+         //if menu entry does not exist
          cout<<"Invalid Entry"<<endl;
       }  
    }
@@ -1239,6 +1410,8 @@ void createAccounts(vector<AccountHolder>& accountHolders, int location)
 
 void modifyAccounts(vector<AccountHolder>& accountHolders,int location)
 {
+   // function to modify current accounts
+   // request id of account holder id and sees if it exists 
    string id; 
    
    cout<<"Enter ID of Account\n";
@@ -1261,8 +1434,10 @@ void modifyAccounts(vector<AccountHolder>& accountHolders,int location)
       
       if(ifPresent)
       {
+         //if the account exists then it checks to see what type it is 
          if(accountHolders[location].getAccountAt(accountLocation).getType() == "C")
          {
+            //nothing can be edited in in the account 
             cout<<"Nothing can be changed"<<endl;
          }
          else if(accountHolders[location].getAccountAt(accountLocation).getType() == "S")
@@ -1292,16 +1467,19 @@ void modifyAccounts(vector<AccountHolder>& accountHolders,int location)
          }
          else if(accountHolders[location].getAccountAt(accountLocation).getType() == "CD")
          {
+            //nothing can be edited in this account 
             cout<<"Nothing Able to be Changed" <<endl;
          }
       }
       else
       {
+         //account doesnt exist 
          cout<<"Account Doesent Exsist"<<endl;
       }
    }
    else
    {
+      //if id is not valid 
       cout<<"Not valid Entry"<<endl; 
    }
 }
@@ -1324,6 +1502,7 @@ bool checkIfNumberD(string number)
 
 string encrypt(string input)
 {
+   //function for encrypting string 
     for(int i = 0; i < input.length(); i++)
             input[i] = input[i] + 2;
 
@@ -1332,6 +1511,7 @@ string encrypt(string input)
 
 string decrypt(string input)
 {
+   //function for decrypting string
     for(int i = 0; i < input.length(); i++)
             input[i] = input[i] - 2;
 
