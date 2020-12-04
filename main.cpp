@@ -188,7 +188,7 @@ int main() {
     }
     
 
-  cout<<"Hello Welcome to Bear Bank"<<endl; 
+  cout<<"Hello, Welcome to Bear Bank"<<endl; 
   
   string userInput = "0";
   
@@ -219,6 +219,7 @@ int main() {
                cout<<"Official Users[1]:" <<endl;
                cout<<"Acount Holders[2]:" <<endl;
                cout<<"Change admin Password[3]:"<<endl;
+               cout<<"Change admin login[4]:"<<endl;
                cout<<"Exit[4]:\n";
 
                getline(cin, adminChoice);
@@ -232,7 +233,13 @@ int main() {
                   handleHoldersAdmin(accountHolders);
                }
                else if(adminChoice == "3")
-               {
+               {  
+
+                  cout << "Hello\n";
+                  string newPassword;
+                  getline(cin, newPassword);
+                  //admin.setPassword(newPassword);
+                  cout << "Password change successful\n";
                }
                else if(adminChoice == "4")
                {
@@ -370,7 +377,7 @@ int main() {
 void handleAccountUser(string userName, int locationInV, vector<AccountHolder>& accountHolders)
 {
    string userEnter;
-   cout<<"Enter password for account";
+   cout<<"Enter password for account: \n";
    int i = locationInV;
    
    getline(cin, userEnter);
@@ -906,15 +913,15 @@ void handleHoldersAdmin(vector<AccountHolder>& accountHolders)
                      cout<<"Enter login\n";
                      getline(cin,login);
                      
-                     bool value;
+                     bool value = false;
                      for(int i =0; i < accountHolders.size();i++)
                      {
                         if(accountHolders[i].getLogin() == login)
                         {
-                           value  = false;
+                           value = true;
                         }
                      }
-                     if(value)
+                     if(!value)
                      {
                         
                         cout<<"Enter password\n";
