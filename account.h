@@ -126,9 +126,7 @@ void AccountP:: setCreationTimeFile(string date)
    date = date.substr(date.find("/") +1 , date.length());
    int year = stoi(date);
 
-   time(&timeFromFile);
-
-   timeCreated = localtime(&timeFromFile);
+   timeCreated = new tm;
 
    timeCreated->tm_mday = day;
    timeCreated->tm_mon = mon - 1;
@@ -319,8 +317,7 @@ void AccountP::deposit(double amount, string bankOfficialName)
             {
                interestRate = 0;
             }
-               
-            transactions.push_back(newTransation);             
+                          
        }
        else
        {
@@ -452,7 +449,7 @@ void AccountP:: printTransactions()
 {
    for(int i =0; i < transactions.size();i++)
    {
-      cout << transactions[i].date[0] << '/' << transactions[i].date[1] << '/' << transactions[i].date[2] << " " << transactions[i].action << " " << transactions[i].amount << " " << "Official: " << transactions[i].official;
+      cout << transactions[i].date[0] << '/' << transactions[i].date[1] << '/' << transactions[i].date[2] << " " << transactions[i].action << " " << transactions[i].amount << " " << "Official: " << transactions[i].official <<"\n";
    }
 }
 #endif
