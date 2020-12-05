@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "AccountP.h"
+#include "account.h"
 
 using namespace std;
 
@@ -46,7 +46,7 @@ class AccountHolder
         void printAccounts();
         void printAccountInfo(int);
         void addAccount(AccountP &);
-        void printTransacions(int,int,int,int);
+        void printTransactions(int,int,int);
         void closeAccount(int);
         void openAccount(int);
 };
@@ -59,6 +59,30 @@ AccountHolder::AccountHolder(string FirstName = "", string LastName = "", string
     phoneNumber = PhoneNumber;
     password = Password;
     login = Login;
+}
+
+void AccountHolder::printTransactions(int accountNum, int month, int year)
+{
+    bool found = false;
+    int location = 0;
+
+    for(int i = 0; i < accounts.size(); i++)
+    {
+        if(accounts[i].getAccountNumber() == accountNum)
+        {
+            found = true;
+            location = i;
+        }
+    }
+
+    if(found)
+    {
+        cout << accounts[location].getTransactionDate(month, year);
+    }
+    else
+    {
+        cout << "This account was not found\n";
+    }
 }
 
 void AccountHolder::addAccount(AccountP &newAccount)

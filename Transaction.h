@@ -13,6 +13,7 @@ class Transaction
         double amount;
         string official;
         Transaction();
+        string printTransaction();
 };
 
 Transaction::Transaction()
@@ -23,6 +24,13 @@ Transaction::Transaction()
     action = "";
     amount = 0.0;
     official = "";
+}
+
+string Transaction::printTransaction()
+{
+    string returnLine = to_string(date[0]) +"/"+to_string(date[1])+"/"+to_string(date[2]) + " " + action + " " + "$" + to_string(amount) + " Official: " + official;
+    return returnLine;
+
 }
 
 #endif

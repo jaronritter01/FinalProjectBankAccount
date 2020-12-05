@@ -60,6 +60,7 @@ class AccountP
         void addTransation(Transaction);
         int numberOfTransactions() const;
         Transaction &getTransactionAt(int);
+        string getTransactionDate(int, int);
 
 };
 
@@ -68,6 +69,30 @@ AccountP::AccountP(int newAccountNumber, double newBalance)
     accountNumber = newAccountNumber;
     balance = newBalance;  
     status = true;
+}
+
+string AccountP::getTransactionDate(int month, int year)
+{
+  
+   string foundTrans ="";
+
+   for(int i = 0; i<transactions.size(); i++)
+   {
+      if(transactions[i].date[0] == month && transactions[i].date[2]==year)
+      {
+         foundTrans += transactions[i].printTransaction() + "\n";
+      }
+   }
+
+   if(foundTrans=="")
+   {
+      cout << "No transactions found\n";
+      return "";
+   }
+   else
+   {
+      return foundTrans;
+   }
 }
 
 string AccountP::getTimeNow() const

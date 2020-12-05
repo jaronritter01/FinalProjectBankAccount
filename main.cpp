@@ -1,5 +1,5 @@
 #include <iostream>
-#include "AccountP.h"
+#include "account.h"
 #include "AccountHolder.h"
 #include "BankOfficial.h"
 #include "Admin.h"
@@ -458,13 +458,14 @@ void handleAccountUser(string userName, int locationInV, vector<AccountHolder>& 
       string accountChoice;
       
       
-      while(accountChoice != "4")
+      while(accountChoice != "5")
       {
          //choices for the account holders 
          cout<<"Change Password[1]:" <<endl;
          cout<<"View Your Current Accounts[2]:" << endl;
          cout<<"View Account[3]:" << endl;
-         cout<<"Exit[4]:\n";
+         cout<<"See transactions from a month[4]\n";
+         cout<<"Exit[5]:\n";
       
          getline(cin, accountChoice);
       
@@ -504,6 +505,21 @@ void handleAccountUser(string userName, int locationInV, vector<AccountHolder>& 
             
          }
          else if(accountChoice == "4")
+         {
+            string accountNum, year, month;
+            
+            cout << "Enter account number\n";
+            getline(cin, accountNum);
+            cout << "Enter the month you would like to search: \n";
+            getline(cin, month);
+            cout << "Enter the year for the transactions\n";
+            getline(cin, year);
+
+            accountHolders[i].printTransactions(stoi(accountNum), stoi(month), stoi(year));
+            
+              
+         }
+         else if(accountChoice == "5")
          {
             //exits the menu
             cout<<"Goodbye"<<endl;
