@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "account.h"
+#include "AccountP.h"
 
 using namespace std;
 
@@ -41,11 +41,14 @@ class AccountHolder
         void createCDAccount(int, double, double);
         void changePassword(string);
         int numberOfAccounts() const;
-        vector<AccountP> & getAccounts();
+        vector<AccountP>& getAccounts();
         string getType(int);
         void printAccounts();
         void printAccountInfo(int);
         void addAccount(AccountP &);
+        void printTransacions(int,int,int,int);
+        void closeAccount(int);
+        void openAccount(int);
 };
 
 AccountHolder::AccountHolder(string FirstName = "", string LastName = "", string Address = "", string PhoneNumber = "", string Password = "", string Login = "")
@@ -328,8 +331,8 @@ void AccountHolder:: printAccounts()
 {
    for(int i= 0; i < accounts.size(); i++)
    {
-      cout<<to_string(accounts[i].getAccountNumber()) << endl;
-      cout<<accounts[i].getType() << endl;
+      cout<<"account number " << to_string(accounts[i].getAccountNumber()) << endl;
+      cout<<"account type " << accounts[i].getType() << endl;
    }
 }
 
@@ -358,20 +361,70 @@ void AccountHolder::printAccountInfo(int accountNumber)
         {
             cout<<"Interest " + to_string(accounts[location].getInterest())<<endl;
         }
-        if(accounts[location].getType() == "Custom Account")
-        {
-            cout<<"Monthly service fee " + to_string(accounts[location].getMonTerm()) << endl;
-        }
         if(accounts[location].getType() == "CD Accounts")
         {
+            cout<<"Interest " + to_string(accounts[location].getInterest())<<endl;
             cout<<"Date of Maturity " + accounts[location].getMaturity() <<endl;
         }
-        cout<< "transactions" << endl;
+        
         accounts[location].printTransactions();
+       
     }
     else
     {
         cout << "Account with account number: " << accountNumber << " does not exist\n";
     }
+}
+
+void AccountHolder::closeAccount(int accountNumber)
+{
+        bool found = false;
+
+        int location = 0;
+
+        for(int i = 0; i < accounts.size(); i ++)
+        {
+            if(accounts[i].getAccountNumber() == accountNumber)
+            {
+                location = i;
+                found = true;
+            }
+        }
+
+        if(found)
+        {
+            accounts[location].setStatus(false);
+            cout << "Account succesfully closed\n";
+        }
+        else
+        {
+            cout << "An account with this account number was not found\n";
+        }
+}
+
+void AccountHolder::openAccount(int accountNumber)
+{
+       bool found = false;
+
+        int location = 0;
+
+        for(int i = 0; i < accounts.size(); i ++)
+        {
+            if(accounts[i].getAccountNumber() == accountNumber)
+            {
+                location = i;
+                found = true;
+            }
+        }
+
+        if(found)
+        {
+            accounts[location].setStatus(true);
+            cout << "Account succesfully closed\n";
+        }
+        else
+        {
+            cout << "An account with this account number was not found\n";
+        }
 }
 #endif
