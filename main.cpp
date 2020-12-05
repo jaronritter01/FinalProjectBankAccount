@@ -105,12 +105,14 @@ int main() {
             string password = decrypt(line.substr(0, line.find(" "))); // password
             line = line.substr(line.find(" ")+1, line.length()); 
 
-            string address = line; // address (might contain spaces)
+            string address = line.substr(0, line.find(" "));
+            line = line.substr(line.find(" ")+1, line.length());
             
-            string status;
+            string id = line; // address (might contain spaces)
             
 
             AccountHolder newAccountHolder(firstName, lastName, address, phoneNumber, password, login);
+            newAccountHolder.setId(stoi(id));
 
             getline(inputFile, line);
             int numberOfAccounts = stoi(line); 
@@ -145,6 +147,11 @@ int main() {
                 {
                   newAccount.setStatus(false);
                 }
+                
+                string type;
+                getline(inputFile,type);
+                
+                newAccount.setType(type);
 
                 getline(inputFile, line);
                 string creationTime = line;
@@ -395,7 +402,7 @@ int main() {
   {
      outFile << "ACCOUNTHOLDER\n";
      accountHolderDetails = accountHolders[i].getFirstName() + " " + accountHolders[i].getLastName() + " " + accountHolders[i].getPhoneNumber() + " " + encrypt(accountHolders[i].getLogin()) + " " 
-                            + encrypt(accountHolders[i].getPassword()) + " " + accountHolders[i].getAddress();
+                            + encrypt(accountHolders[i].getPassword()) + " " + accountHolders[i].getAddress() + " " + to_string(accountHolders[i].getId());
 
       outFile << accountHolderDetails << '\n';
       outFile << accountHolders[i].numberOfAccounts() << '\n';
@@ -412,11 +419,14 @@ int main() {
          {
             outFile<<"false"<< "\n";
          }
+         
+         outFile << currAcc.getType()<<'\n';
+         
          outFile << currAcc.getDateCreated() << '\n';
          outFile << currAcc.getTimeNow() << '\n';
          outFile << currAcc.numberOfTransactions() << '\n';
 
-         for(int k = 0; k < 4; k++)
+         for(int k = 0; k < currAcc.numberOfTransactions(); k++)
          {
             Transaction currTran = currAcc.getTransactionAt(k);
             outFile << currTran.date[0] << "/" << currTran.date[1] << "/" << currTran.date[2] << " " << currTran.action << " " << "$" << currTran.amount << " " << "Official: " << currTran.official << "\n";
@@ -603,7 +613,7 @@ void searchForAccountHolder(vector<AccountHolder>& accountHolders,vector<BankOff
    while(userEnter != "3")
    {
       //menu for searching accounts 
-      cout<<"Search by account number2[1]:"<<endl;
+      cout<<"Search by account number[1]:"<<endl;
       cout<<"Search by phoneNumber or last name[2]:"<< endl;
       cout<<"Exit[3]:\n";
       
@@ -688,7 +698,7 @@ void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationA
             {
                int id = stoi(accountID);
             
-               bankOfficials[locationBO].openAccountD(accountHolders[locationAH], id);    
+               bankOfficials[locationBO].openAccountD(id, accountHolders, locationAH);     
             }
             else
             {
@@ -706,7 +716,7 @@ void handleAccountOfficial(vector<AccountHolder>&  accountHolders, int locationA
             {
                int id = stoi(accountID);
             
-               bankOfficials[locationBO].closeAccount(accountHolders[locationAH], id);    
+               bankOfficials[locationBO].closeAccount(id, accountHolders, locationAH);    
             }
             else
             {
