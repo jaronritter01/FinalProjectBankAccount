@@ -2,14 +2,17 @@ ADMIN
 Jaron Ritter lt3;37 rcuuyqtf 10
 BANKOFFICIAL
 John Smith nqikp rcuuyqtf 11
+enable
 ACCOUNTHOLDER
-Josh Tiller 555-555-5555 nqikp rcuuyqtf Address 
+Josh Tiller 555-555-5555 nqikp rcuuyqtf Address 111
 1
 123 10.0 0.0 0.0
+true
+C
 9/10/2020 
 10/1/2020 
 4
 10/2/2020 deposit $10.0 Official: John Smith
 10/3/2020 deposit $10.0 Official: John Smith
 10/4/2020 deposit $10.0 Official: John Smith
-10/5/2020 withdraw $20.0 Official: John Smith
+10/5/2020 withdraw $20.0 Official: John Smit
